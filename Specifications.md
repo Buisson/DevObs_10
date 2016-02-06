@@ -17,3 +17,20 @@ Tous les tests créés pour le programme d'origine sont effectés sur le program
 
 ## Afficher le résultat des tests
 Une fois toutes les mutations du programme effectuées et testées, les rapports générés précédemment par JUnit sont lus et analysés afin d'en ressortir des informations pertinantes et utiles pour des statistiques, comme le nombre de tests échoués (programmes mutants non tués) afin de générer un document HTML.
+## Quelles mutations ?
+modifier un opérateur arithmétique par un autre
+exemple : int i = 5 + 3; ----> int i = 5 * 3;
+
+modifier un opérateur booléen par un autre
+exemple : if(true || false) ---> if(true && false)
+
+modifier une expression booléen par son inverse
+exemple : if(true) ------> if(!true)
+
+modifier un nom de variable
+exemple : int i; ----> int j;
+
+## Ou les appliquer ?
+On les applique dans toutes les classes du projet à tester. (Toutes les classes testé).
+## Comment les appliquer ?
+En utilisant Spoon.
