@@ -5,6 +5,9 @@ Dans le cycle de vie Maven, notre Plugin se situe après les étapes de compilat
 
 Plus précisément, notre plugin sera un `goal `de la phase `test `et s’exécutera après l’exécution des goals `built-in` de cette phase. 
 Une autre option est d’invoquer directement notre plugin via la ligne de commande, cela lancera les phases qui précèdent la phase `test` et finalement celle-ci elle même.
+L'ordre de l'éxccution 
+
+L'ordre de l'exécution n’est pas problématique car il est configurable depuis le fichier `pom.xml ` on peut alors « insérer » notre plugin dans n’importe quelle phase et au même temps proposer une exécution « hors-phase » c.-à-d. qui ne fait pas partie du build lifecycle  
 
 
 ## Mutations du programme
