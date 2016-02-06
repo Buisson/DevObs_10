@@ -2,7 +2,8 @@
 
 ## Place dans le cycle de vie Maven
 Dans le cycle de vie Maven, notre Plugin se situe après les étapes de compilation (`compil`) et de tests (`test`). Nous avons considéré que la phase `test` de Maven était prioritaire par rapport à notre Plugin, car celui-ci ayant pour utilité de tester un programme, si les tests de sur le programme d'origine ne passent pas, cela n'aurait aucun sens de lancer les tests de mutation. 
-Plus précisément, notre plugin sera un « goal » de la phase `test `et s’exécutera après l’exécution des goals `built-in`  de cette phase. 
+
+Plus précisément, notre plugin sera un `goal `de la phase `test `et s’exécutera après l’exécution des goals `built-in` de cette phase. 
 Une autre option est d’invoquer directement notre plugin via la ligne de commande, cela lancera les phases qui précèdent la phase `test` et finalement celle-ci elle même.
 
 
