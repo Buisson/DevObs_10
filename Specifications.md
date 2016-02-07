@@ -47,5 +47,6 @@ C'est à dire :
 * Dans les blocs.
 * Dans les attributs.
 * Dans les variables.
+
 ## Comment les appliquer ?
 En utilisant Spoon.
