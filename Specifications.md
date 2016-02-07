@@ -76,5 +76,8 @@ C'est à dire :
 * Dans les attributs.
 * Dans les variables.
 
+L'intérêt étant de créer des mutants qui survivent la phase de tests, il faut que le nombre de modification par classe ne dépasse pas une certaine limite (qui peut être configurable), au cas contraire, si on effectue tous les changements possibles dans une classe la probabilité que le mutant ne passe pas les tests devienne beaucoup plus importante. 
+
+Cela aussi permet l’utilisateur de mieux interpréter les résultats (dans le cas où les testent passent), car si on effectue beaucoup de changements, il est difficile d’identifier exactement le problème.
 ## Comment les appliquer ?
 En utilisant Spoon.
