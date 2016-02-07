@@ -29,7 +29,8 @@ Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'a
 
 ## Quelles mutations ?
 On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
-modifier une valeur `int fct(){return 0;} ==> int fct(){return 42;} ==>`
+
+modifier une valeur `int fct(){return 0;} ==> int fct(){return 42;}`
 
 modifier un opérateur arithmétique par un autre, exemple :     `int i = 5 + 3;   ==> int i = 5 * 3`
 
