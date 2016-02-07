@@ -1,3 +1,6 @@
+### Mutations et sélecteurs
+Chaque test de mutation permet d'effectuer une ou plusieurs mutations sur un certain nombre d'éléments choisis grâce aux sélecteurs, le tout en exploitant la bibliothèque `Spoon`, développée par l'INRIA, permettant la modification de fichiers source. Une fois les nouvelles sources créées et compilées, nous obtenons le programme dit "mutant".
+
 # Description de la chaîne de build
 
 Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle 
@@ -7,9 +10,6 @@ Dans cette phase notre plugin va générer les mutants et les mettre dans le dos
 Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers créés à la phase de compilation, cela se fait juste en manipulant le pom.xml
 ### La phase test 
 Ici il s’agit encore une fois de prendre en considération les mutations générées pour les tester, surefire permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme…   
-### Mutations et sélecteurs
-Chaque test de mutation permet d'effectuer une ou plusieurs mutations sur un certain nombre d'éléments choisis grâce aux sélecteurs, le tout en exploitant la bibliothèque `Spoon`, développée par l'INRIA, permettant la modification de fichiers source. Une fois les nouvelles sources créées et compilées, nous obtenons le programme dit "mutant".
-
 ### Tester la mutation du programme
 Tous les tests créés pour le programme d'origine sont effectés sur le programme mutant, avec pour but de le tuer. Les tests sont executés avec le framework de test unitaire JUnit, qui génère un rapport par test au format XML.
 
