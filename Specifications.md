@@ -42,10 +42,10 @@ modifier une incrémentation par une décrémentation, exemple                 `
 ## Ou les appliquer ?
 On les applique dans toutes les classes du projet à tester. (Toutes les classes testé).
 C'est à dire :
-*Dans les méthodes.
-*Dans les constructeurs.
-*Dans les blocs.
-*Dans les attributs.
-*Dans les variables.
+* Dans les méthodes.
+* Dans les constructeurs.
+* Dans les blocs.
+* Dans les attributs.
+* Dans les variables.
 ## Comment les appliquer ?
 En utilisant Spoon.
