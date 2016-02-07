@@ -60,11 +60,9 @@ On évite les mutations comme suppression de la déclaration d'une variable car 
 
 #### Supprimer l’appel à un constructeur  
 
-`A a = new A()                            A a = null;` 
+`A a = new A()   ==>    A a = null;` 
 
-`                                ==>` 
 
-`faire quelque chose avec a               faire quelque chose avec a  ` 
 
 
 
