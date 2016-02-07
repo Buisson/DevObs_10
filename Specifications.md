@@ -28,6 +28,7 @@ Le document HTML généré par notre framework affichera comme informations :
 Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'affichage des informations pertinantes que nous avons récupérés auparavant.
 
 ## Quelles mutations ?
+On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
 modifier un opérateur arithmétique par un autre
 exemple : int i = 5 + 3; ----> int i = 5 * 3;
 
