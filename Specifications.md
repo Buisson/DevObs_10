@@ -4,7 +4,10 @@ Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du bui
 ### La phase generate-sources
 Dans cette phase notre plugin va générer les mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lancer et fait appel au différent mécanisme qui créent les mutant (en utilisant spoon), pour ce faire il faut spécifier à maven que notre plugin participe à la génération du code, on peut alors utiliser Build Helper qui est un outil qui permet de configurer le build lifecycle.
 ### La phase compile 
-Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers créés à la phase de compilation, cela se fait juste en manipulant le pom.xml 
+Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers créés à la phase de compilation, cela se fait juste en manipulant le pom.xml
+### La phase test 
+Ici il s’agit encore une fois de prendre en considération les mutations générées pour les tester, surefire permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme…   
+
 
 ## Mutations du programme
 Une fois le programme d'origine testé, la mutation s'amorce, et les étapes suivantes sont répétées autant de fois que désiré, avec des combinaisons différentes (mutations et sélecteurs).
