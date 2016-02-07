@@ -30,11 +30,17 @@ Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'a
 ## Quelles mutations ?
 On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
 
-modifier une valeur `int fct(){return 0;} ==> int fct(){return 42;}`
+#### modifier une valeur 
 
-modifier un opérateur arithmétique par un autre, exemple :     `int i = 5 + 3;   ==> int i = 5 * 3`
+`int fct(){return 0;} ==> int fct(){return 42;}`
 
-modifier un opérateur booléen par un autre, exemple:  `if(condition1 || condition2) ==> if(condition1 && condition2)`
+#### modifier un opérateur arithmétique par un autre, exemple :   
+
+`int i = 5 + 3;   ==> int i = 5 * 3`
+
+#### modifier un opérateur booléen par un autre, exemple:  
+
+`if(condition1 || condition2) ==> if(condition1 && condition2)`
 
 modifier une expression booléen par son inverse, exemple:  `if(condition)          ==> if(!condition)`
 
@@ -43,6 +49,8 @@ modifier une incrémentation par une décrémentation, exemple                 `
 modifications sur les opérateurs de comparais (plusieurs combinaisons possible)  `a >= b ==> a >b `
 
 supprimer une condition : `if(c){....} ==> if(true){....}`
+
+Supprimer l’appel à un constructeur  `A a = new A() ` 
 
 ## Ou les appliquer ?
 On les applique dans toutes les classes du projet à tester. (Toutes les classes testé).
