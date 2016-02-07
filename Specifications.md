@@ -20,6 +20,14 @@ Tous les tests créés pour le programme d'origine sont effectés sur le program
 
 ## Afficher le résultat des tests
 Une fois toutes les mutations du programme effectuées et testées, les rapports générés précédemment par JUnit sont lus et analysés afin d'en ressortir des informations pertinantes et utiles pour des statistiques, comme le nombre de tests échoués (programmes mutants non tués) afin de générer un document HTML.
+##Contenu du document HTML
+Le document HTML généré par notre framework affichera comme informations :
+-Le pourcentage de mutants tués.
+-Le nombre de classe testées.
+-Affichage des mutants qui ont survécu (ligne et nom de la classe).
+
+Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'affichage des informations pertinantes que nous avons récupérés auparavant.
+
 ## Quelles mutations ?
 modifier un opérateur arithmétique par un autre
 exemple : int i = 5 + 3; ----> int i = 5 * 3;
