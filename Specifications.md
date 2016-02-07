@@ -14,7 +14,7 @@ Dans cette phase notre Plugin va générer les programmes mutants et les mettre 
 Par défaut, Maven compile uniquement les sources dans `src/main/java`. Une fois encore, on peut utiliser `Build Helper` afin d'ajouter les dossiers supplémentaires que nous avons généré dans la phase `generate-sources`, cela se fait simplement en manipulant le pom.xml. Les programmaes mutants sont alors aussi compilés.
 ## La phase `test` 
 Ici, il s’agit encore une fois de prendre en considération les mutations générées pour les tester. `Surefire` permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme.
-Cela parait très intéressant car on peut tester les divers programmes mutants en parallèle. Chaque test lancé génère un fichier XML contenant les informations contenant ce test (fail, success).    
+Cela parait très intéressant car on peut tester les divers programmes mutants en parallèle. Chaque test lancé génère un fichier XML contenant les informations relative à ce test (fail, success).    
 
 
 ## Afficher le résultat des tests
@@ -22,10 +22,10 @@ Une fois toutes les mutations du programme effectuées et testées, les rapports
 ##Contenu du document HTML
 Le document HTML généré par notre framework affichera comme informations :
 * Le pourcentage de mutants tués.
-* Le nombre de classe testées.
-* Affichage des mutants qui ont survécu (ligne et nom de la classe).
+* Le nombre de classes testées.
+* Description des mutants ayant survécu (ligne et nom de la classe).
 
-Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'affichage des informations pertinantes que nous avons récupérés auparavant.
+Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'affichage des informations pertinantes que nous avons récupéré auparavant.
 
 ## Quelles mutations ?
 On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
