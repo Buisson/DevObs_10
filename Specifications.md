@@ -30,13 +30,13 @@ Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'a
 ## Quelles mutations ?
 On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
 
-modifier un opérateur arithmétique par un autre, exemple :       int i = 5 + 3;   ==> int i = 5 * 3;
+modifier un opérateur arithmétique par un autre, exemple :     `int i = 5 + 3;   ==> int i = 5 * 3`
 
-modifier un opérateur booléen par un autre, exemple: if(condition1 || condition2) ==> if(condition1 && condition2)
+modifier un opérateur booléen par un autre, exemple:  `if(condition1 || condition2) ==> if(condition1 && condition2)`
 
-modifier une expression booléen par son inverse, exemple:  if(condition)          ==> if(!condition)
+modifier une expression booléen par son inverse, exemple:  `if(condition)          ==> if(!condition)`
 
-modifier une incrémentation par une décrémentation, exemple                 i++   ==> i--
+modifier une incrémentation par une décrémentation, exemple                 `i++   ==> i--`
 
 
 ## Ou les appliquer ?
