@@ -62,7 +62,7 @@ On évite les mutations comme la suppression de la déclaration d'une variable c
 
 `A a = new A()   ==>    A a = null;` 
 
-
+Notre framework pourra facilement intégrer d'autres types de mutations au bon vouloir de l'utilisateur.
 
 
 
