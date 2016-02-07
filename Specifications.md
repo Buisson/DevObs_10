@@ -34,19 +34,19 @@ On évite les mutations comme suppression de la déclaration d'une variable car 
 
 `int fct(){return 0;} ==> int fct(){return 42;}`
 
-#### Modifier un opérateur arithmétique par un autre, exemple :   
+#### Modifier un opérateur arithmétique par un autre 
 
 `int i = 5 + 3;   ==> int i = 5 * 3`
 
-#### Modifier un opérateur booléen par un autre, exemple:  
+#### Modifier un opérateur booléen par un autre
 
 `if(condition1 || condition2) ==> if(condition1 && condition2)`
 
-#### Modifier une expression booléen par son inverse, exemple:  
+#### Modifier une expression booléen par son inverse 
 
 `if(condition)          ==> if(!condition)`
 
-#### Modifier une incrémentation par une décrémentation, exemple              
+#### Modifier une incrémentation par une décrémentation             
 
 `i++   ==> i--`
 
@@ -54,7 +54,7 @@ On évite les mutations comme suppression de la déclaration d'une variable car 
 
 `a >= b ==> a >b `
 
-#### Supprimer une condition : 
+#### Supprimer une condition
 
 `if(c){....} ==> if(true){....}`
 
