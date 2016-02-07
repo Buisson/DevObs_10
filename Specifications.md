@@ -8,14 +8,13 @@ Tous les tests créés pour le programme d'origine sont effectés sur le program
 # Description de la chaîne de build
 Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle. 
 
-### La phase `generate-sources`
+## La phase `generate-sources`
 Dans cette phase notre Plugin va générer les programmes mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lance et fait appel aux différents mécanismes qui créent les programmes mutants (en utilisant `Spoon`). Pour ce faire il faut spécifier à Maven que notre Plugin participe à la génération du code. On peut alors utiliser `Build Helper`, un outil permettant de configurer le build lifecycle.
-### La phase `compile` 
+## La phase `compile` 
 Par défaut, Maven compile uniquement les sources dans `src/main/java`. Une fois encore, on peut utiliser `Build Helper` afin d'ajouter les dossiers supplémentaires que nous avons généré dans la phase `generate-sources`, cela se fait simplement en manipulant le pom.xml. Les programmaes mutants sont alors aussi compilés.
-
-### La phase test 
-Ici il s’agit encore une fois de prendre en considération les mutations générées pour les tester, surefire permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme…
-cela parait très intéressant car on peut tester tous les mutants en parallèle. Chaque teste lancé généré un fichier contenant les informations contenant ce test (fail, success).    
+## La phase `test` 
+Ici, il s’agit encore une fois de prendre en considération les mutations générées pour les tester. `Surefire` permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme.
+Cela parait très intéressant car on peut tester les divers programmes mutants en parallèle. Chaque test lancé génère un fichier XML contenant les informations contenant ce test (fail, success).    
 
 
 ## Afficher le résultat des tests
