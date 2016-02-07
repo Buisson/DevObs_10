@@ -32,35 +32,35 @@ On évite les mutations comme la suppression de la déclaration d'une variable c
 
 #### Modifier une valeur 
 
-`int fct(){return 0;} ==> int fct(){return 42;}`
+`int fct() { return 0; }        ==>     int fct() { return 42; }`
 
 #### Modifier un opérateur arithmétique par un autre 
 
-`int i = 5 + 3;   ==> int i = 5 * 3`
+`int i = 5 + 3;                 ==>     int i = 5 * 3`
 
 #### Modifier un opérateur booléen par un autre
 
-`if(condition1 || condition2) ==> if(condition1 && condition2)`
+`if(condition1 || condition2)   ==>     if(condition1 && condition2)`
 
 #### Modifier une expression booléen par son inverse 
 
-`if(condition)          ==> if(!condition)`
+`if(condition)                  ==>     if(!condition)`
 
 #### Modifier une incrémentation par une décrémentation             
 
-`i++   ==> i--`
+`i++                            ==>     i--`
 
 #### Modifications sur les opérateurs de comparais (plusieurs combinaisons possible) 
 
-`a >= b ==> a >b `
+`a >= b                         ==>     a >b `
 
 #### Supprimer une condition
 
-`if(c){....} ==> if(true){....}`
+`if(c) { .... }                 ==>     if(true) { .... }`
 
 #### Supprimer l’appel à un constructeur  
 
-`A a = new A()   ==>    A a = null;` 
+`A a = new A()                  ==>     A a = null;` 
 
 Notre framework pourra facilement intégrer d'autres types de mutations au bon vouloir de l'utilisateur.
 
