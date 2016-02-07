@@ -82,14 +82,13 @@ Cela  permet aussi à l’utilisateur de mieux interpréter les résultats (dans
 
 
 ## Comment les appliquer ?
-En utilisant les différents outils mis  à notre disposition par `spoon`  :
+En utilisant les différents outils mis à notre disposition par `Spoon`  :
 
-Un `Processor`  nous permet de « extraire » toute sorte d’information sur un type donnée (type au sens de l’AST) en utilisant les  `Filter` et les`Path`.
+Un `Processor`  nous permet d' « extraire » toute sorte d’informations sur un type donné (type au sens de l’AST) en utilisant les  `Filter` et les`Path`.
 
-Pour les Filter, spoon nous donne un API qui nous permet de faire des requetés et « interroger » l’AST, par exemple le filtre `OverridingMethodFilter` renvoie toute les méthodes qui surchargent la méthode passée en paramètre. 
+Pour les `Filter`, Spoon nous donne un API nous permettant de faire des requêtes et d' « interroger » l’AST. Par exemple, le filtre `OverridingMethodFilter` renvoie toute les méthodes qui surchargent la méthode passée en paramètre. 
 
-Après avoir récolté toutes les informations sur une classe, on peut en créer une autre identique on appliquant les modifications souhaitées, pour ce faire on peut utiliser les `Factory` , par exemple pour créer une classe: 
-
+Après avoir récolté toutes les informations sur une classe, on peut en créer une autre identique on appliquant les modifications souhaitées. Pour ce faire on peut utiliser les `Factory`, et, par exemple, pour créer une classe : 
 `CtClass newClass = factory.Core().createClass();`   
 
 
