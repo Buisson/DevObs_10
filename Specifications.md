@@ -1,17 +1,20 @@
 ### Mutations et sélecteurs
 Chaque test de mutation permet d'effectuer une ou plusieurs mutations sur un certain nombre d'éléments choisis grâce aux sélecteurs, le tout en exploitant la bibliothèque `Spoon`, développée par l'INRIA, permettant la modification de fichiers source. Une fois les nouvelles sources créées et compilées, nous obtenons le programme dit "mutant".
 
+### Tester la mutation du programme
+Tous les tests créés pour le programme d'origine sont effectés sur le programme mutant, avec pour but de le tuer. Les tests sont executés avec le framework de test unitaire JUnit, qui génère un rapport par test au format XML.
+
 # Description de la chaîne de build
 
 Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle 
 ### La phase generate-sources
-Dans cette phase notre plugin va générer les mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lancer et fait appel au différent mécanisme qui créent les mutant (en utilisant spoon), pour ce faire il faut spécifier à maven que notre plugin participe à la génération du code, on peut alors utiliser Build Helper qui est un outil qui permet de configurer le build lifecycle.
+Dans cette phase notre plugin va générer les mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lance et fait appel au différents mécanismes qui créent les mutants (en utilisant spoon), pour ce faire il faut spécifier à maven que notre plugin participe à la génération du code, on peut alors utiliser Build Helper qui est un outil qui permet de configurer le build lifecycle.
 ### La phase compile 
-Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers créés à la phase de compilation, cela se fait juste en manipulant le pom.xml
+Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers supplémentaires qu'on a générées dans la phase generate-sources, cela se fait juste en manipulant le pom.xml, les mutants sont alors aussi compilés.
 ### La phase test 
-Ici il s’agit encore une fois de prendre en considération les mutations générées pour les tester, surefire permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme…   
-### Tester la mutation du programme
-Tous les tests créés pour le programme d'origine sont effectés sur le programme mutant, avec pour but de le tuer. Les tests sont executés avec le framework de test unitaire JUnit, qui génère un rapport par test au format XML.
+Ici il s’agit encore une fois de prendre en considération les mutations générées pour les tester, surefire permet de configurer les tests  en spécifiant les dossiers contenant les fichiers sources à tester et le nombre de threads pour permettre le parallélisme…
+cela parait très intéressant car on peut tester tous les mutants en parallèle. Chaque teste lancé généré un fichier contenant les informations contenant ce test (fail, success).    
+
 
 ## Afficher le résultat des tests
 Une fois toutes les mutations du programme effectuées et testées, les rapports générés précédemment par JUnit sont lus et analysés afin d'en ressortir des informations pertinantes et utiles pour des statistiques, comme le nombre de tests échoués (programmes mutants non tués) afin de générer un document HTML.
