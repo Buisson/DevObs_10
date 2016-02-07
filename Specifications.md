@@ -1,7 +1,7 @@
-### Mutations et sélecteurs
+## Mutations et sélecteurs
 Chaque test de mutation permet d'effectuer une ou plusieurs mutations sur un certain nombre d'éléments choisis grâce aux sélecteurs, le tout en exploitant la bibliothèque `Spoon`, développée par l'INRIA, permettant la modification de fichiers source. Une fois les nouvelles sources créées et compilées, nous obtenons le programme dit "mutant".
 
-### Tester la mutation du programme
+## Tester la mutation du programme
 Tous les tests créés pour le programme d'origine sont effectés sur le programme mutant, avec pour but de le tuer. Les tests sont executés avec le framework de test unitaire JUnit, qui génère un rapport par test au format XML.
 
 
@@ -28,7 +28,7 @@ Le document HTML généré par notre framework affichera comme informations :
 Ce document HTML utilisera Highchart pour génerer des graphiques permettant l'affichage des informations pertinantes que nous avons récupéré auparavant.
 
 ## Quelles mutations ?
-On évite les mutations comme suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
+On évite les mutations comme la suppression de la déclaration d'une variable car elle produira une erreur de compilation et par conséquence n'aura aucune importance.
 
 #### Modifier une valeur 
 
@@ -68,7 +68,7 @@ On évite les mutations comme suppression de la déclaration d'une variable car 
 
 
 ## Ou les appliquer ?
-On les applique dans toutes les classes du projet à tester. (Toutes les classes testé).
+On les applique dans toutes les classes du projet à tester. (Toutes les classes testées).
 C'est à dire :
 * Dans les méthodes.
 * Dans les constructeurs.
@@ -76,8 +76,10 @@ C'est à dire :
 * Dans les attributs.
 * Dans les variables.
 
-L'intérêt étant de créer des mutants qui survivent la phase de tests, il faut que le nombre de modification par classe ne dépasse pas une certaine limite (qui peut être configurable), au cas contraire, si on effectue tous les changements possibles dans une classe la probabilité que le mutant ne passe pas les tests devienne beaucoup plus importante. 
+L'intérêt étant de créer des mutants ayant des chances potentielles de survivre à la phase de test, il faut que le nombre de modifications par classe ne dépasse pas une certaine limite (qui peut être configurable). Dans le cas contraire, si on effectue tous les changements possibles dans une classe la probabilité que le mutant ne passe pas les tests devie beaucoup plus importante. 
 
-Cela aussi permet l’utilisateur de mieux interpréter les résultats (dans le cas où les testent passent), car si on effectue beaucoup de changements, il est difficile d’identifier exactement le problème.
+Cela aussi permet à l’utilisateur de mieux interpréter les résultats (dans le cas où les testes passent), car si on effectue beaucoup de changements, il est difficile d’identifier exactement le problème.
+
+
 ## Comment les appliquer ?
 En utilisant Spoon.
