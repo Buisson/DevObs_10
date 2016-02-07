@@ -1,14 +1,10 @@
 # Description de la chaîne de build
 
-## Place dans le cycle de vie Maven
-Dans le cycle de vie Maven, notre Plugin se situe après les étapes de compilation (`compil`) et de tests (`test`). Nous avons considéré que la phase `test` de Maven était prioritaire par rapport à notre Plugin, car celui-ci ayant pour utilité de tester un programme, si les tests de sur le programme d'origine ne passent pas, cela n'aurait aucun sens de lancer les tests de mutation. 
-
-Plus précisément, notre plugin sera un `goal `de la phase `test `et s’exécutera après l’exécution des goals `built-in` de cette phase. 
-Une autre option est d’invoquer directement notre plugin via la ligne de commande, cela lancera les phases qui précèdent la phase `test` et finalement celle-ci elle même.
-L'ordre de l'éxccution 
-
-L'ordre de l'exécution n’est pas problématique car il est configurable depuis le fichier `pom.xml ` on peut alors « insérer » notre plugin dans n’importe quelle phase et au même temps proposer une exécution « hors-phase » c.-à-d. qui ne fait pas partie du build lifecycle  
-
+Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle 
+### La phase generate-sources
+Dans cette phase notre plugin va générer les mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lancer et fait appel au différent mécanisme qui créent les mutant (en utilisant spoon), pour ce faire il faut spécifier à maven que notre plugin participe à la génération du code, on peut alors utiliser Build Helper qui est un outil qui permet de configurer le build lifecycle.
+### La phase compile 
+Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers créés à la phase de compilation, cela se fait juste en manipulant le pom.xml 
 
 ## Mutations du programme
 Une fois le programme d'origine testé, la mutation s'amorce, et les étapes suivantes sont répétées autant de fois que désiré, avec des combinaisons différentes (mutations et sélecteurs).
