@@ -4,11 +4,13 @@ Chaque test de mutation permet d'effectuer une ou plusieurs mutations sur un cer
 ### Tester la mutation du programme
 Tous les tests créés pour le programme d'origine sont effectés sur le programme mutant, avec pour but de le tuer. Les tests sont executés avec le framework de test unitaire JUnit, qui génère un rapport par test au format XML.
 
-# Description de la chaîne de build
 
-Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle 
+# Description de la chaîne de build
+Dans le cycle de vie Maven, notre Plugin intervient dans plusieurs phases du build lifecycle. 
+
 ### La phase generate-sources
-Dans cette phase notre plugin va générer les mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lance et fait appel au différents mécanismes qui créent les mutants (en utilisant spoon), pour ce faire il faut spécifier à maven que notre plugin participe à la génération du code, on peut alors utiliser Build Helper qui est un outil qui permet de configurer le build lifecycle.
+Dans cette phase notre Plugin va générer les programmes mutants et les mettre dans le dossier target/genereted-sources, donc notre Mojo se lance et fait appel aux différents mécanismes qui créent les programmes mutants (en utilisant `Spoon`). Pour ce faire il faut spécifier à Maven que notre Plugin participe à la génération du code. On peut alors utiliser `Build Helper`, un outil permettant de configurer le build lifecycle.
+
 ### La phase compile 
 Par défaut, maven compile seulement les sources dans src/main/java, encore une fois, on peut utiliser Build Helper pour ajouter les dossiers supplémentaires qu'on a générées dans la phase generate-sources, cela se fait juste en manipulant le pom.xml, les mutants sont alors aussi compilés.
 ### La phase test 
