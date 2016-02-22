@@ -7,15 +7,16 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class AppTest
     extends TestCase
 {
+    private App a = new App();
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public AppTest(String testName)
     {
         super( testName );
     }
@@ -33,6 +34,8 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+     //   assertTrue( a.a()==3 );
+        assertTrue( a.a()==42 );
+
     }
 }
