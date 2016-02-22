@@ -33,9 +33,7 @@ public class App extends AbstractMojo {
         buildHelper();
         execute();
 
-        label :
-        System.out.println();
-        continue label;
+
     }
 
     private  void buildHelper() {
