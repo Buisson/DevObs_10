@@ -6,11 +6,7 @@ package com.mycompany.app;
  */
 public class App
 {
-    int a(){
-        return 3;
-    }
-    public static void main( String[] args )
-    {
-        System.out.println( 1-2 );
+    int a() {
+        return 3 + 1;
     }
 }

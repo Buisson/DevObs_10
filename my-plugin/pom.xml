@@ -44,6 +44,12 @@
 
   <url>http://maven.apache.org</url>
   <dependencies>
+      <dependency>
+          <groupId>fr.inria.gforge.spoon</groupId>
+          <artifactId>spoon-core</artifactId>
+          <version>4.4.0</version>
+      </dependency>
+
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
