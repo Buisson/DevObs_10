@@ -11,8 +11,10 @@ import java.util.ArrayList;
 public class App
 {
     private ArrayList<Integer> test;
+    private int a,b;
     //private JUnitCore testing;
     int a() {
-        return 3 + 1;
+
+        return a + b;
     }
 }

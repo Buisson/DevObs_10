@@ -9,6 +9,7 @@ import org.apache.maven.project.MavenProject;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
 import spoon.Launcher;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtStatement;
@@ -25,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -36,8 +39,8 @@ import java.util.List;
 @Mojo( name = "sayhi")
 public class App extends AbstractMojo {
     /**
-     * permet la récupération d'information sur le project qui utilise notre plugin
-     * la variable project est remplie autmatiquement
+     * permet la récupération d'informations sur le project qui utilise notre plugin
+     * la variable project est remplie automatiquement
      */
     @Parameter(defaultValue = "${project}", required = true, readonly = false)
     private MavenProject project;
@@ -57,7 +60,7 @@ public class App extends AbstractMojo {
         l.buildModel();
         CtClass origClass = (CtClass) l.getFactory().Package().getRootPackage()
                 .getElements(new TypeFilter(CtClass.class)).get(0);
-        System.out.println(origClass);
+
 
         BinaryOperatorMutator mutator = new BinaryOperatorMutator(); //on cree le binary mutator
 
@@ -83,7 +86,7 @@ public class App extends AbstractMojo {
                     .clone(op.getParent(CtClass.class));
             // setting the package
             klass.setParent(origClass.getParent());
-            System.out.println(klass);
+
 
             String pathMutant = project.getBasedir().toString()+"/target/mutations/main/java/com/mycompany/app/App.java";
             new File(pathMutant);
@@ -103,8 +106,8 @@ public class App extends AbstractMojo {
             StandardJavaFileManager fm = compiler.getStandardFileManager(null,null,null);
             File f = new File(pathMutant);//project.getBasedir().toString()+"/src/main/java/com/mycompany/app/App.java"
             Iterable<? extends JavaFileObject> compUnits = fm.getJavaFileObjects(f);
-            optionList.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
-            optionList.addAll(Arrays.asList("-d",project.getBasedir().toString()+"/target/mutations/main/java"));
+            optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
+            optionList.addAll(Arrays.asList("-d", project.getBasedir().toString() + "/target/mutations/main/java"));
 
             JavaCompiler.CompilationTask task = compiler.getTask(null,fm,null,optionList,null,compUnits);
             task.call();
@@ -115,18 +118,24 @@ public class App extends AbstractMojo {
             File file = new File(project.getBasedir().toString()+"/target/test-classes");
             System.out.println(project.getBasedir().toString()+"/target/test-classes");
             try {
-                ClassLoader cl = new URLClassLoader(new URL[]{file.toURL()});
+                ClassLoader  cl = new URLClassLoader(new URL[]{file.toURL()}, Thread.currentThread().getContextClassLoader());
                 Class cls = cl.loadClass("com.mycompany.app.AppTest");
+                
                 System.out.println("####################");
                 System.out.println("####################");
                 System.out.println("#####MES TESTS######");
                 System.out.println("####################");
                 System.out.println("####################");
                 JUnitCore junit = new JUnitCore();
-                Result result = junit.run(cls);
+                Result result = junit.runClasses(cls);
+
+                result.wasSuccessful();
+                System.out.println(result.wasSuccessful());
                 for (Failure failure : result.getFailures()) {
                     System.out.println(failure.toString());
                 }
+
+
                 System.out.println("###########################");
                 System.out.println("######END OF MES TESTS#####");
                 System.out.println("###########################");
@@ -135,7 +144,7 @@ public class App extends AbstractMojo {
             /**End Of TESTS PHASE**/
         }
 
-        buildHelper(); //Change le sourceCodeDirectory.
+      //  buildHelper(); //Change le sourceCodeDirectory.
 
     }
 
@@ -152,8 +161,8 @@ public class App extends AbstractMojo {
     }
 
     private  void buildHelper() {
-        project.getCompileSourceRoots().remove(0);
-        project.addCompileSourceRoot(project.getBasedir().toString()+"/target/mutations/main/java");
+      //  project.getCompileSourceRoots().remove(0);
+        //project.addCompileSourceRoot(project.getBasedir().toString()+"/target/mutations/main/java");
     }
 
     /**
