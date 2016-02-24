@@ -6,6 +6,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import spoon.Launcher;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtStatement;
@@ -14,7 +17,19 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.visitor.Filter;
 import spoon.reflect.visitor.filter.TypeFilter;
 
-import java.io.*;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -28,28 +43,14 @@ public class App extends AbstractMojo {
     private MavenProject project;
     public void execute() throws MojoExecutionException, MojoFailureException {
         System.out.println("#####################  my_plugin  #####################################\n");
-       //s project.add
 
         String destination = project.getBasedir().toString()+"/target/mutations";
         new File(destination).mkdir();
         cloneFolder(project.getBasedir().toString()+"/src",destination);
-       // System.out.println(project.getTestCompileSourceRoots());
-     //   System.out.println(project.getCompileSourceRoots().remove(0));
-        ///home/user/Desktop/si4/semestre2/DevOps/mutation/DevObs_10/my-app/src/main/java
-        //project.addCompileSourceRoot(project.getBasedir().toString()+"/target/mutations/main/java/com/mycompany/app");
+
         System.out.println("\n#######################################################################\n");
-        /*
-        TestDriver td = new TestDriver() {
-            @Override
-            public void test(Object o) {
 
-            }
-        };
-        BinaryOperatorMutator bm = new BinaryOperatorMutator();
-        MutationTester mt = new MutationTester(project.getBasedir().toString()+"/target/mutations/main/java/com/mycompany/app/App.java",td,bm);
-        mt.generateMutants();*/
-
-        /*Spoon*/
+        /**Spoon**/
         Launcher l = new Launcher();
         l.addInputResource(project.getBasedir().toString()+"/src/main/java/com/mycompany/app/App.java");
         System.out.println();
@@ -68,9 +69,6 @@ public class App extends AbstractMojo {
         });
 
         for (CtElement e : elementsToBeMutated) {
-            // this loop is the trickiest part
-            // because we want one mutation after the other
-
             // cloning the AST element
             CtElement op = l.getFactory().Core().clone(e);
 
@@ -85,17 +83,9 @@ public class App extends AbstractMojo {
                     .clone(op.getParent(CtClass.class));
             // setting the package
             klass.setParent(origClass.getParent());
-            //origClass.
-            System.out.println("££££");
-
-            System.out.println("££££");
-            System.out.println("####");
-            //System.out.println("package "+klass.getPackage().toString()+";");
             System.out.println(klass);
-            System.out.println("####");
 
             String pathMutant = project.getBasedir().toString()+"/target/mutations/main/java/com/mycompany/app/App.java";
-            //File tmp = new File(pathMutant);
             new File(pathMutant);
             try {
                 PrintWriter writer = new PrintWriter(pathMutant,"UTF-8");
@@ -106,17 +96,46 @@ public class App extends AbstractMojo {
             catch (FileNotFoundException e1) {e1.printStackTrace();}
             catch (UnsupportedEncodingException e1) {e1.printStackTrace();}
 
-            // restoring the original code
-            //replace(op, e);
+            /**Compilation phase**/
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            List<String> optionList = new ArrayList<>();
+
+            StandardJavaFileManager fm = compiler.getStandardFileManager(null,null,null);
+            File f = new File(pathMutant);//project.getBasedir().toString()+"/src/main/java/com/mycompany/app/App.java"
+            Iterable<? extends JavaFileObject> compUnits = fm.getJavaFileObjects(f);
+            optionList.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
+            optionList.addAll(Arrays.asList("-d",project.getBasedir().toString()+"/target/mutations/main/java"));
+
+            JavaCompiler.CompilationTask task = compiler.getTask(null,fm,null,optionList,null,compUnits);
+            task.call();
+            /**End Of Compilation phase**/
+
+            /**TESTS PHASE**/
+
+            File file = new File(project.getBasedir().toString()+"/target/test-classes");
+            System.out.println(project.getBasedir().toString()+"/target/test-classes");
+            try {
+                ClassLoader cl = new URLClassLoader(new URL[]{file.toURL()});
+                Class cls = cl.loadClass("com.mycompany.app.AppTest");
+                System.out.println("####################");
+                System.out.println("####################");
+                System.out.println("#####MES TESTS######");
+                System.out.println("####################");
+                System.out.println("####################");
+                JUnitCore junit = new JUnitCore();
+                Result result = junit.run(cls);
+                for (Failure failure : result.getFailures()) {
+                    System.out.println(failure.toString());
+                }
+                System.out.println("###########################");
+                System.out.println("######END OF MES TESTS#####");
+                System.out.println("###########################");
+            } catch (MalformedURLException e1) {e1.printStackTrace();}
+            catch (ClassNotFoundException e1) {e1.printStackTrace();}
+            /**End Of TESTS PHASE**/
         }
 
-
-        /*Fin Spoon*/
-
-
-        buildHelper();
-        //execute();
-
+        buildHelper(); //Change le sourceCodeDirectory.
 
     }
 
@@ -135,19 +154,9 @@ public class App extends AbstractMojo {
     private  void buildHelper() {
         project.getCompileSourceRoots().remove(0);
         project.addCompileSourceRoot(project.getBasedir().toString()+"/target/mutations/main/java");
-
-
-        /**
-        System.out.println("avant   "+project.getBuild().getSourceDirectory());
-
-        project.getBuild().setSourceDirectory(project.getBasedir().toString() +
-                "/target/mutations/main/java");
-        System.out.println("apres  "+project.getBuild().getSourceDirectory());
-**/
     }
 
     /**
-     * merci stackoverflow :)
      * @param source
      * @param target
      */

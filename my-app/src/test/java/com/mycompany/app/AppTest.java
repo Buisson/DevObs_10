@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class AppTest {
     @Test
-    public void AppTest(){
+    public void ApplicationTest(){
         App app = new App();
 
         assertTrue(app.a()==2);
