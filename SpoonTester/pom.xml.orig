@@ -11,6 +11,7 @@
     <packaging>maven-plugin</packaging>
 
     <name>Spoon Test Maven Plugin</name>
+<<<<<<< HEAD
 
     <build>
         <plugins>
@@ -37,6 +38,8 @@
             </plugin>
         </plugins>
     </build>
+=======
+>>>>>>> 371fcfe82728076c6436efe0983caf66eb872f8e
 
     <dependencies>
         <dependency>
@@ -62,6 +65,11 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
+            <version>2.0.4</version>
         </dependency>
     </dependencies>
 </project>
