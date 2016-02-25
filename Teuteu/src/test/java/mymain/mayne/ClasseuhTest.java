@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ClasseuhTest {
 
@@ -17,7 +16,7 @@ public class ClasseuhTest {
 
     @Test
     public void mTest() {
-        assertEquals(10, c.retour());
+        assertEquals(4, c.retour());
     }
 
 }
