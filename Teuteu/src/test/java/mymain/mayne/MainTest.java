@@ -17,7 +17,7 @@ public class MainTest {
 
     @Test
     public void mTest() {
-        assertEquals(-1, main.m());
+        assertEquals(10, main.m());
     }
 
     @Test
