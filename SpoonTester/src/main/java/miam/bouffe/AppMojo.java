@@ -7,9 +7,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -25,6 +25,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,133 +38,96 @@ public class AppMojo extends AbstractMojo{
     private MavenProject project;
 
 
-    private Xpp3Dom generateConfiguration() {
-        Xpp3Dom config = new Xpp3Dom("configuration");
-        Xpp3Dom processors = new Xpp3Dom("processors");
-        Xpp3Dom catchProc = new Xpp3Dom("processor");
-        catchProc.setValue("miam.bouffe.CatchProcessor");
-        Xpp3Dom notNullCheckAdderProc = new Xpp3Dom("processor");
-        notNullCheckAdderProc.setValue("NotNullCheckAdderProcessor");
-        Xpp3Dom binaryOperatorProc = new Xpp3Dom("processor");
-        binaryOperatorProc.setValue("BinaryOperatorMutator");
-
-        processors.addChild(catchProc);
-        processors.addChild(notNullCheckAdderProc);
-        //processors.addChild(binaryOperatorProc);
-        config.addChild(processors);
-
-        return config;
-    }
-
-
     public void execute() throws MojoExecutionException,MojoFailureException{
         getLog().info("Debut du Plugin Maven de Mutation");
 
-        /*
-        System.out.println("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤plugins : ");
-        int ind=0;int realInd=0;
-        for (Object p :project.getBuildPlugins()){
-            System.out.println(p.toString());
-            Plugin pTemp = (Plugin) p;
-            if(pTemp.toString().equals("Plugin [fr.inria.gforge.spoon:spoon-maven-plugin]")){
-                System.out.println("DANS LE IF!!");
-                System.out.println(pTemp.getConfiguration().toString());
-                System.out.println("FIN IF");
-                ((Plugin) p).setConfiguration(generateConfiguration());
-                System.out.println(((Plugin)p).getConfiguration().toString());
-                realInd=ind;
-            }
-            ind++;
-        }
-        System.out.println("ééééééééééééééééééééééééé");
-        System.out.println(((Plugin)project.getBuildPlugins().get(realInd)).getConfiguration().toString());
-        System.out.println("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤");
-        System.out.println(project.getBasedir());
-        System.out.println("FIN PROJECT");*/
-
-
-
         /**MODIFICATION DU POM**/
+        //TODO Voir le probleme des child (surement faire un trim quelque part ...)
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
         Document doc = null;
+        Document docProcessor = null;
 
-        File pomXML = new File(project.getBasedir()+"/pom.xml");
+        File pomXML = new File(project.getBasedir()+"/pom.xml"); //Fichier pom.xml
+        File tmpProcessorsXML = new File(project.getBasedir()+"/tmpMyProcessor.xml"); //Fichier temporaire myprocessor
 
         try {
+            if(!tmpProcessorsXML.exists()) { //Si le fichier temporaire n'existe pas le creer.
+                Files.copy(Paths.get(project.getBasedir() + "/myProcessor.xml"), Paths.get(project.getBasedir() + "/tmpMyProcessor.xml"), StandardCopyOption.REPLACE_EXISTING);
+            }
+            /**Parseur xml stuff**/
             dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(pomXML);
+            docProcessor = dBuilder.parse(tmpProcessorsXML);
         } catch (ParserConfigurationException e) {e.printStackTrace();}
         catch (SAXException e) {e.printStackTrace();}
         catch (IOException e) {e.printStackTrace();}
 
-        System.out.println("ROOT : " + doc.getDocumentElement().getNodeName());
-        NodeList nlPOM = doc.getDocumentElement().getElementsByTagName("processors");
-
-        //removeChilds(nlPOM.item(0));
-        nlPOM.item(0).removeChild(nlPOM.item(0).getFirstChild());
-
-        if(doc.getDocumentElement().getElementsByTagName("processor").getLength()==1) {
-            Document document = dBuilder.newDocument();
-            Element elemProc = document.createElement("processor");
-            elemProc.setTextContent("miam.bouffe.CatchProcessor");
-            nlPOM.item(0).appendChild(elemProc);
+        /**Vide dans le pom.xml ce que la balise processors contient**/
+        int longNode = doc.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+        for(int i =0; i < longNode ; i++){
+            doc.getElementsByTagName("processors").item(0).getChildNodes().item(0).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(0));
         }
 
-        // write the content into xml file
+        /**Ajout des processors dans le pom**/
+        int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+        Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
+        for(int i=0 ; i< longTMP ; i++){
+            Element temporaryElement = doc.createElement("processor");
+            temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(0).getTextContent()));
+            doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
+        }
+
+
+        /**Suppression du premier element processors du fichier temporaire**/
+        docProcessor.getElementsByTagName("processors").item(0).getParentNode().removeChild(docProcessor.getElementsByTagName("processors").item(0));
+
+
+        /**Mise a jour des fichier xml (pom + tmpprocessor)**/
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer=null;
         try {
             transformer = transformerFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        }
+        } catch (TransformerConfigurationException e) {e.printStackTrace();}
         DOMSource source = new DOMSource(doc);
+        DOMSource sourceProcessors =  new DOMSource(docProcessor);
         StreamResult result = new StreamResult(new File(project.getBasedir()+"/pom.xml"));
-
+        StreamResult resultProcessors = new StreamResult(tmpProcessorsXML);
         // Output to console for testing
         //StreamResult result = new StreamResult(System.out);
         try {
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+            transformer.transform(source, result);//modifie le pom.xml
+            transformer.transform(sourceProcessors,resultProcessors); // modifie le myProcessor.xml
+        } catch (TransformerException e) {e.printStackTrace();}
 
-
+        /**APPELLE RECURSIF MAVEN**/
         try {
-            System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
+            if(docProcessor.getElementsByTagName("processors").getLength()!=0) {
+                System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
-            if(doc.getDocumentElement().getElementsByTagName("processor").getLength()>=1) {
-                Runtime.getRuntime().exec("mvn package");
+                //TODO ici enregistrer les fichiers de test.
+
+                ProcessBuilder pb = new ProcessBuilder("mvn", "package");//TODO remplacer par mvn test ?
+                pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+                Process p = pb.start();
+                p.waitFor();
+                System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
             }
-            System.out.println("APRES LE EXEC()");
-        } catch (IOException e) {
-            System.out.println("################EXCEPTION MAVEEEEEENNNNNNNNN##############################");
-            e.printStackTrace();
-        }
-/**
-        InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile( new File( project.getBasedir()+"/pom.xml" ) );
-        request.setGoals( Arrays.asList( "package" ) );
+            else{
+                //Fin des appels recursif
+                tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
+            }
 
-        Invoker invoker = new DefaultInvoker();
-        try {
-            System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
-            //System.out.println(request.);
-            invoker.execute( request );
-        } catch (MavenInvocationException e) {
-            e.printStackTrace();
-        }**/
+        } catch (IOException e) {e.printStackTrace();}
+        catch (InterruptedException e) {e.printStackTrace();}
 
-        /**
-                 <processor>miam.bouffe.CatchProcessor</processor>
-                 <processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor>
-                 <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-                 **/
+/** TMP liste de processeurs :
+ * ###########################
+ * <processor>miam.bouffe.CatchProcessor</processor><processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+**/
 
         /**DEBUT GENERATION HTML**/
-        //DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        //DocumentBuilder dBuilder = null;
 
         if(new File(project.getBasedir()+"/target/surefire-reports").exists()) {
             File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
@@ -233,14 +199,10 @@ public class AppMojo extends AbstractMojo{
                 writer.println("</html>");
                 writer.close();
 
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
-                e.printStackTrace();
             }
+            catch (IOException e) {e.printStackTrace();}
+            catch (ParserConfigurationException e) {e.printStackTrace();}
+            catch (SAXException e) {e.printStackTrace();}
 
         }
 
