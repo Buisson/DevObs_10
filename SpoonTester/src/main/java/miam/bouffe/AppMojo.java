@@ -113,7 +113,11 @@ public class AppMojo extends AbstractMojo{
 
                 //TODO ici enregistrer les fichiers de test.
 
-                ProcessBuilder pb = new ProcessBuilder("mvn", "package");//TODO remplacer par mvn test ?
+                String mvnCallString = "mvn";
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    mvnCallString += ".cmd";
+                }
+                ProcessBuilder pb = new ProcessBuilder(mvnCallString, "package");//TODO remplacer par mvn test ?
                 pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                 Process p = pb.start();
