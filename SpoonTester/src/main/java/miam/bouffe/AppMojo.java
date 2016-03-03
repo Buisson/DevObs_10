@@ -63,25 +63,30 @@ public class AppMojo extends AbstractMojo{
         catch (SAXException e) {e.printStackTrace();}
         catch (IOException e) {e.printStackTrace();}
 
+        /**Sauvegarde de la taille avant suppression pour condition d'arret maven**/
+        int tailleProcessors =  docProcessor.getElementsByTagName("processors").getLength();
+
         /**Vide dans le pom.xml ce que la balise processors contient**/
         int longNode = doc.getElementsByTagName("processors").item(0).getChildNodes().getLength();
         for(int i =0; i < longNode ; i++){
             doc.getElementsByTagName("processors").item(0).getChildNodes().item(0).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(0));
         }
 
-        /**Ajout des processors dans le pom**/
-        int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
-        Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
-        for(int i=0 ; i< longTMP ; i++){
-            Element temporaryElement = doc.createElement("processor");
-            temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(0).getTextContent()));
-            doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
+        if(tailleProcessors!=0) {
+            /**Ajout des processors dans le pom**/
+            int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+            Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
+            for (int i = 0; i < longTMP; i++) {
+                Element temporaryElement = doc.createElement("processor");
+                temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(0).getTextContent()));
+                doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
+            }
+
+
+            /**Suppression du premier element processors du fichier temporaire**/
+
+            docProcessor.getElementsByTagName("processors").item(0).getParentNode().removeChild(docProcessor.getElementsByTagName("processors").item(0));
         }
-
-
-        /**Suppression du premier element processors du fichier temporaire**/
-        docProcessor.getElementsByTagName("processors").item(0).getParentNode().removeChild(docProcessor.getElementsByTagName("processors").item(0));
-
 
         /**Mise a jour des fichier xml (pom + tmpprocessor)**/
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -102,7 +107,8 @@ public class AppMojo extends AbstractMojo{
 
         /**APPELLE RECURSIF MAVEN**/
         try {
-            if(docProcessor.getElementsByTagName("processors").getLength()!=0) {
+            System.out.println("TAILLE : "+tailleProcessors);
+            if(tailleProcessors!=0) {
                 System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
                 //TODO ici enregistrer les fichiers de test.
@@ -116,9 +122,9 @@ public class AppMojo extends AbstractMojo{
             }
             else{
                 //Fin des appels recursif
-                tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
+                //tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
             }
-
+            System.out.println("DELETE : "+tmpProcessorsXML.delete());//On supprimme le fichier temporaire.
         } catch (IOException e) {e.printStackTrace();}
         catch (InterruptedException e) {e.printStackTrace();}
 
