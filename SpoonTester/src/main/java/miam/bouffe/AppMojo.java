@@ -31,14 +31,23 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name="rapport")
-public class AppMojo extends AbstractMojo{
+@Mojo(name = "rapport")
+public class AppMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project}", required=true,readonly = true)
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
+    public int getFirstElementIndex(NodeList nodes) {
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-    public void execute() throws MojoExecutionException,MojoFailureException{
+
+    public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Debut du Plugin Maven de Mutation");
 
         /**MODIFICATION DU POM**/
@@ -48,31 +57,35 @@ public class AppMojo extends AbstractMojo{
         Document doc = null;
         Document docProcessor = null;
 
-        File pomXML = new File(project.getBasedir()+"/pom.xml"); //Fichier pom.xml
-        File tmpProcessorsXML = new File(project.getBasedir()+"/tmpMyProcessor.xml"); //Fichier temporaire myprocessor
+        File pomXML = new File(project.getBasedir() + "/pom.xml"); //Fichier pom.xml
+        File tmpProcessorsXML = new File(project.getBasedir() + "/tmpMyProcessor.xml"); //Fichier temporaire myprocessor
 
         try {
-            if(!tmpProcessorsXML.exists()) { //Si le fichier temporaire n'existe pas le creer.
+            if (!tmpProcessorsXML.exists()) { //Si le fichier temporaire n'existe pas le creer.
                 Files.copy(Paths.get(project.getBasedir() + "/myProcessor.xml"), Paths.get(project.getBasedir() + "/tmpMyProcessor.xml"), StandardCopyOption.REPLACE_EXISTING);
             }
             /**Parseur xml stuff**/
             dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(pomXML);
             docProcessor = dBuilder.parse(tmpProcessorsXML);
-        } catch (ParserConfigurationException e) {e.printStackTrace();}
-        catch (SAXException e) {e.printStackTrace();}
-        catch (IOException e) {e.printStackTrace();}
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         /**Sauvegarde de la taille avant suppression pour condition d'arret maven**/
-        int tailleProcessors =  docProcessor.getElementsByTagName("processors").getLength();
+        int tailleProcessors = docProcessor.getElementsByTagName("processors").getLength();
 
         /**Vide dans le pom.xml ce que la balise processors contient**/
         int longNode = doc.getElementsByTagName("processors").item(0).getChildNodes().getLength();
-        for(int i =0; i < longNode ; i++){
+        for (int i = 0; i < longNode; i++) {
             doc.getElementsByTagName("processors").item(0).getChildNodes().item(0).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(0));
         }
 
-        if(tailleProcessors!=0) {
+        if (tailleProcessors != 0) {
             /**Ajout des processors dans le pom**/
             int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
             Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
@@ -90,25 +103,29 @@ public class AppMojo extends AbstractMojo{
 
         /**Mise a jour des fichier xml (pom + tmpprocessor)**/
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer=null;
+        Transformer transformer = null;
         try {
             transformer = transformerFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {e.printStackTrace();}
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        }
         DOMSource source = new DOMSource(doc);
-        DOMSource sourceProcessors =  new DOMSource(docProcessor);
-        StreamResult result = new StreamResult(new File(project.getBasedir()+"/pom.xml"));
+        DOMSource sourceProcessors = new DOMSource(docProcessor);
+        StreamResult result = new StreamResult(new File(project.getBasedir() + "/pom.xml"));
         StreamResult resultProcessors = new StreamResult(tmpProcessorsXML);
         // Output to console for testing
         //StreamResult result = new StreamResult(System.out);
         try {
             transformer.transform(source, result);//modifie le pom.xml
-            transformer.transform(sourceProcessors,resultProcessors); // modifie le myProcessor.xml
-        } catch (TransformerException e) {e.printStackTrace();}
+            transformer.transform(sourceProcessors, resultProcessors); // modifie le myProcessor.xml
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
 
         /**APPELLE RECURSIF MAVEN**/
         try {
-            System.out.println("TAILLE : "+tailleProcessors);
-            if(tailleProcessors!=0) {
+            System.out.println("TAILLE : " + tailleProcessors);
+            if (tailleProcessors != 0) {
                 System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
                 //TODO ici enregistrer les fichiers de test.
@@ -123,23 +140,25 @@ public class AppMojo extends AbstractMojo{
                 Process p = pb.start();
                 p.waitFor();
                 System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-            }
-            else{
+            } else {
                 //Fin des appels recursif
                 //tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
             }
-            System.out.println("DELETE : "+tmpProcessorsXML.delete());//On supprimme le fichier temporaire.
-        } catch (IOException e) {e.printStackTrace();}
-        catch (InterruptedException e) {e.printStackTrace();}
+            System.out.println("DELETE : " + tmpProcessorsXML.delete());//On supprimme le fichier temporaire.
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 /** TMP liste de processeurs :
  * ###########################
  * <processor>miam.bouffe.CatchProcessor</processor><processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-**/
+ **/
 
         /**DEBUT GENERATION HTML**/
 
-        if(new File(project.getBasedir()+"/target/surefire-reports").exists()) {
+        if (new File(project.getBasedir() + "/target/surefire-reports").exists()) {
             File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
             if (!dirTarget.exists()) {
                 dirTarget.mkdir();
@@ -209,10 +228,13 @@ public class AppMojo extends AbstractMojo{
                 writer.println("</html>");
                 writer.close();
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
             }
-            catch (IOException e) {e.printStackTrace();}
-            catch (ParserConfigurationException e) {e.printStackTrace();}
-            catch (SAXException e) {e.printStackTrace();}
 
         }
 
