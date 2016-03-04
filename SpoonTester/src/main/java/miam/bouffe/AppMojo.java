@@ -46,6 +46,16 @@ public class AppMojo extends AbstractMojo {
         return -1;
     }
 
+    private int getLengthRealElement(NodeList nodes){
+        int length = 0;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
+                length++;
+            }
+        }
+        return length;
+    }
+
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Debut du Plugin Maven de Mutation");
@@ -77,22 +87,27 @@ public class AppMojo extends AbstractMojo {
         }
 
         /**Sauvegarde de la taille avant suppression pour condition d'arret maven**/
-        int tailleProcessors = docProcessor.getElementsByTagName("processors").getLength();
+        //int tailleProcessors = docProcessor.getElementsByTagName("processors").getLength();
+        int tailleProcessors = getLengthRealElement(docProcessor.getElementsByTagName("processors"));
 
         /**Vide dans le pom.xml ce que la balise processors contient**/
         int longNode = doc.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+        System.out.println("LONGEUUUUUR : longTMP : "+longNode);
         for (int i = 0; i < longNode; i++) {
-            doc.getElementsByTagName("processors").item(0).getChildNodes().item(0).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(0));
+            doc.getElementsByTagName("processors").item(0).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(i));
         }
 
         if (tailleProcessors != 0) {
             /**Ajout des processors dans le pom**/
             int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+            //int longTMP = getLengthRealElement(docProcessor.getElementsByTagName("processors").item(0).getChildNodes());
             Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
             for (int i = 0; i < longTMP; i++) {
                 Element temporaryElement = doc.createElement("processor");
-                temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(0).getTextContent()));
-                doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
+                if ((tmpnode.getChildNodes().item(i).getNodeName() != null) && (tmpnode.getChildNodes().item(i).getNodeType() == Node.ELEMENT_NODE)) {
+                    temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(i).getTextContent()));
+                    doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
+                }
             }
 
 
