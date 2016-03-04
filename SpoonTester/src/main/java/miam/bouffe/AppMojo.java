@@ -11,6 +11,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -37,7 +39,7 @@ public class AppMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
-    public int getFirstElementIndex(NodeList nodes) {
+    private int getFirstElementIndex(NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
                 return i;
@@ -56,6 +58,78 @@ public class AppMojo extends AbstractMojo {
         return length;
     }
 
+    private boolean isElementNode(Node node) {
+        return (node.getNodeName() != null) && (node.getNodeType() == Node.ELEMENT_NODE);
+    }
+
+    private void generateHtml(Node processors) {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        Document doc;
+        Document testDoc;
+
+        File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
+        if (!dirTarget.exists()) {
+            dirTarget.mkdir();
+        }
+
+        try {
+            List<NodeList> nList = new ArrayList<>();
+            File tmpReport  = new File(project.getBasedir() + "/target/mutation-report/tmpReport.xml");
+
+            if (!(tmpReport.exists())) {
+                tmpReport.createNewFile();
+            }
+            doc = dbFactory.newDocumentBuilder().parse(tmpReport);
+            Element mutantElement = doc.createElement("mutant");
+            Element processorsElement = doc.createElement("processors");
+
+            NodeList processorsChildren = processors.getChildNodes();
+
+            for (int i = 0; i < processorsChildren.getLength(); i++) {
+                if (isElementNode(processorsChildren.item(i))) {
+                    Element processorElement = doc.createElement("processor");
+                    processorElement.setNodeValue(processorsChildren.item(i).getTextContent());
+                    processorsElement.appendChild(processorElement);
+                }
+            }
+
+            if (new File(project.getBasedir() + "/target/surefire-reports").exists()) {
+                for (File fXmlFile : new File(project.getBasedir() + "/target/surefire-reports").listFiles()) {
+                    if (FilenameUtils.getExtension((fXmlFile.getName())).toLowerCase().equals("xml")) {
+                        testDoc = dbFactory.newDocumentBuilder().parse(fXmlFile);
+                        nList.add(testDoc.getElementsByTagName("testcase"));
+                    }
+                }
+            }
+            mutantElement.appendChild(processorsElement);
+            doc.appendChild(mutantElement);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = null;
+            try {
+                transformer = transformerFactory.newTransformer();
+            } catch (TransformerConfigurationException e) {
+                e.printStackTrace();
+            }
+
+            DOMSource source = new DOMSource(doc);
+            System.out.println("\n\n\n\n\nFile\n\n\n\n\n");
+            StreamResult result = new StreamResult(System.out);
+            try {
+                transformer.transform(source, result);
+            } catch (TransformerException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Debut du Plugin Maven de Mutation");
@@ -78,11 +152,7 @@ public class AppMojo extends AbstractMojo {
             dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(pomXML);
             docProcessor = dBuilder.parse(tmpProcessorsXML);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -143,7 +213,10 @@ public class AppMojo extends AbstractMojo {
             if (tailleProcessors != 0) {
                 System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
+                int index = getFirstElementIndex(doc.getElementsByTagName("processors"));
+                        //doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
                 //TODO ici enregistrer les fichiers de test.
+                generateHtml(doc.getElementsByTagName("processors").item(index));
 
                 String mvnCallString = "mvn";
                 if (System.getProperty("os.name").toLowerCase().contains("windows")) {
