@@ -46,6 +46,15 @@ public class AppMojo extends AbstractMojo {
         return -1;
     }
 
+    private int getLastElementIndex(NodeList nodes) {
+        for (int i = nodes.getLength() - 1; i >= 0; i--) {
+            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private int getLengthRealElement(NodeList nodes){
         int length = 0;
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -61,6 +70,29 @@ public class AppMojo extends AbstractMojo {
     }
 
     private void generateHtml(Node processors) {
+        File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
+        if (!dirTarget.exists()) {
+            dirTarget.mkdir();
+        }
+
+        File report = new File(project.getBasedir() + "/tmpReport.xml");
+        try {
+            if (!report.exists()) {
+                report.createNewFile();
+                PrintWriter writer = new PrintWriter(report.getAbsolutePath(), "UTF-8");
+                writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                writer.println("<mutants>");
+                writer.println("</mutants>");
+                writer.close();
+            }
+            generateHtml(processors, 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generateHtml(Node processors, int a) {
+        System.out.println("########################### BEGIN GENERATE HTML ###############################################");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         Document doc;
         Document testDoc;
@@ -72,12 +104,16 @@ public class AppMojo extends AbstractMojo {
 
         try {
             List<NodeList> nList = new ArrayList<>();
-            File tmpReport  = new File(project.getBasedir() + "/target/mutation-report/tmpReport.xml");
+            File tmpReport  = new File(project.getBasedir() + "/tmpReport.xml");
 
             if (!(tmpReport.exists())) {
                 tmpReport.createNewFile();
             }
+
             doc = dbFactory.newDocumentBuilder().parse(tmpReport);
+
+            NodeList mutantsList = doc.getElementsByTagName("mutants");
+            Node mutants = mutantsList.item(getLastElementIndex(mutantsList));
             Element mutantElement = doc.createElement("mutant");
             Element processorsElement = doc.createElement("processors");
 
@@ -86,21 +122,55 @@ public class AppMojo extends AbstractMojo {
             for (int i = 0; i < processorsChildren.getLength(); i++) {
                 if (isElementNode(processorsChildren.item(i))) {
                     Element processorElement = doc.createElement("processor");
+                    processorElement.setTextContent(processorsChildren.item(i).getTextContent());
                     processorElement.setNodeValue(processorsChildren.item(i).getTextContent());
                     processorsElement.appendChild(processorElement);
                 }
             }
+            mutantElement.appendChild(processorsElement);
+
+            Element testsElement = doc.createElement("tests");
 
             if (new File(project.getBasedir() + "/target/surefire-reports").exists()) {
-                for (File fXmlFile : new File(project.getBasedir() + "/target/surefire-reports").listFiles()) {
-                    if (FilenameUtils.getExtension((fXmlFile.getName())).toLowerCase().equals("xml")) {
-                        testDoc = dbFactory.newDocumentBuilder().parse(fXmlFile);
-                        nList.add(testDoc.getElementsByTagName("testcase"));
+                File[] fileList = new File(project.getBasedir() + "/target/surefire-reports").listFiles();
+                if (fileList != null) {
+                    for (File fXmlFile : fileList) {
+                        if (FilenameUtils.getExtension((fXmlFile.getName())).toLowerCase().equals("xml")) {
+                            testDoc = dbFactory.newDocumentBuilder().parse(fXmlFile);
+                            Element classElement = doc.createElement("class");
+                            int indexFirstTestSuite = getFirstElementIndex(testDoc.getElementsByTagName("testcase"));
+                            if (indexFirstTestSuite != -1) {
+                                Element classname = (Element) testDoc.getElementsByTagName("testcase").item(indexFirstTestSuite);
+                                classElement.setAttribute("name", classname.getAttribute("classname"));
+                            }
+                            testsElement.appendChild(classElement);
+                            NodeList testsCases = testDoc.getElementsByTagName("testcase");
+                            for (int i = 0; i < testsCases.getLength(); i++) {
+                                Element testcase = (Element) testsCases.item(i);
+                                if (isElementNode(testcase)) {
+                                    Element testElement = doc.createElement("test");
+                                    testElement.setAttribute("name", testcase.getAttribute("name"));
+                                    NodeList children = testcase.getChildNodes();
+                                    if (children.getLength() != 0) {
+                                        int firstChildIndex = getFirstElementIndex(children);
+                                        if (firstChildIndex != -1) {
+                                            Element message = doc.createElement("message");
+                                            Element firstChild = (Element) children.item(firstChildIndex);
+                                            message.setTextContent(firstChild.getAttribute("message"));
+                                            testElement.appendChild(message);
+                                        }
+                                    }
+                                    classElement.appendChild(testElement);
+                                }
+                            }
+                        }
                     }
                 }
             }
-            mutantElement.appendChild(processorsElement);
-            doc.appendChild(mutantElement);
+            mutantElement.appendChild(testsElement);
+            mutants.appendChild(mutantElement);
+            //doc.appendChild(mutantElement);
+
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = null;
@@ -112,7 +182,7 @@ public class AppMojo extends AbstractMojo {
 
             DOMSource source = new DOMSource(doc);
             System.out.println("\n\n\n\n\nFile\n\n\n\n\n");
-            StreamResult result = new StreamResult(System.out);
+            StreamResult result = new StreamResult(tmpReport);
             try {
                 transformer.transform(source, result);
             } catch (TransformerException e) {
@@ -159,10 +229,15 @@ public class AppMojo extends AbstractMojo {
         int tailleProcessors = getLengthRealElement(docProcessor.getElementsByTagName("processors"));
 
         /**Vide dans le pom.xml ce que la balise processors contient**/
-        int longNode = doc.getElementsByTagName("processors").item(0).getChildNodes().getLength();
+        int firstItemIndex = getFirstElementIndex(doc.getElementsByTagName("processors"));
+        int longNode = doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().getLength();
         System.out.println("LONGEUUUUUR : longTMP : "+longNode);
-        for (int i = 0; i < longNode; i++) {
-            doc.getElementsByTagName("processors").item(0).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(0).getChildNodes().item(i));
+        if (firstItemIndex != -1) {
+            for (int i = 0; i < longNode; i++) {
+                if (doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i) != null) {
+                    doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i));
+                }
+            }
         }
 
         if (tailleProcessors != 0) {
@@ -214,6 +289,7 @@ public class AppMojo extends AbstractMojo {
                 int index = getFirstElementIndex(doc.getElementsByTagName("processors"));
                         //doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
                 //TODO ici enregistrer les fichiers de test.
+                System.out.println("########################### BEFORE GENERATE HTML ###############################################");
                 generateHtml(doc.getElementsByTagName("processors").item(index));
 
                 String mvnCallString = "mvn";
@@ -231,9 +307,7 @@ public class AppMojo extends AbstractMojo {
                 //tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
             }
             System.out.println("DELETE : " + tmpProcessorsXML.delete());//On supprimme le fichier temporaire.
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
