@@ -6,29 +6,17 @@
     <processors>
 
 
-
-
-
-
-
-
-
-
-
-        <processor>miam.bouffe.CatchProcessor</processor>
-
-
-
-
-
-
-
-
+        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
 
 
 
     </processors>
-    <processors>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-    </processors>
+
+
+
+
+
+
+
+
 </myprocessors>
