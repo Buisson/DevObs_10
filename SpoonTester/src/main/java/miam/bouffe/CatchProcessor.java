@@ -18,7 +18,7 @@ public class CatchProcessor extends AbstractProcessor<CtCatch> {
 
     public void process(CtCatch element) {
         if (isToBeProcessed(element)) {
-            final CtCodeSnippetStatement stmt = getFactory().Code().createCodeSnippetStatement("// TODO : Empty catch clause");
+            final CtCodeSnippetStatement stmt = getFactory().Code().createCodeSnippetStatement(" TODO : Empty catch clause");
             final CtBlock<?> ctBlock = getFactory().Code().createCtBlock(stmt);
             element.setBody(ctBlock);
         }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <myprocessors>
-    <!--<processors><processor>miam.bouffe.CatchProcessor</processor><processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor></processors>
-    <processors><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor></processors>-->
+    <processors>
+        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+    </processors>
     <processors>
 
 
@@ -27,30 +28,7 @@
 
 
     </processors>
-
     <processors>
-
-
-
-
-
-
-
-
-
-
-
-        <processor>miam.bouffe.CatchProcessor</processor>
-
-
-
-
-
-
-
-
-
-
-
+        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
     </processors>
 </myprocessors>
