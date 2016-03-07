@@ -69,6 +69,143 @@ public class AppMojo extends AbstractMojo {
         return (node.getNodeName() != null) && (node.getNodeType() == Node.ELEMENT_NODE);
     }
 
+    private void generateRapportHighChart(){
+        Document rapportDocXML=null;
+        File fXmlFile = new File(project.getBasedir() + "/tmpReport.xml");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        if (fXmlFile.exists()) {
+            try {
+                rapportDocXML = dbFactory.newDocumentBuilder().parse(fXmlFile);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                List<NodeList> nlList = new ArrayList<NodeList>();
+
+                File htmlReport = new File(project.getBasedir() + "/target/mutation-report/htmlReport.html");
+                PrintWriter writer = new PrintWriter(htmlReport.getAbsolutePath(), "UTF-8");
+
+                writer.println("<!DOCTYPE html>");
+                writer.println("<html>");
+                writer.println("<head>");
+                writer.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\"></script>\n" +
+                        "<script src=\"https://code.highcharts.com/highcharts.js\"></script>\n" +
+                        "<script src=\"https://code.highcharts.com/modules/exporting.js\"></script>\n");
+                writer.println("<title>Mutation Report</title>");
+                writer.println("<style>");
+                writer.println("#tableMutants{border:1px solid;margin:0 auto;}" +
+                        "#tableMutants td{border:1px solid;}" +
+                        ".aliveMut{background-color:red;}" +
+                        ".deadMut{background-color:green;}");
+                writer.println("</style>");
+                writer.println("<meta charset=\"UTF-8\">");
+                writer.println("</head>");
+                writer.println("<body>");
+                int mutantVivant = 0;
+                int mutantMort = 0;
+                int mutantTotal = rapportDocXML.getElementsByTagName("mutant").getLength();
+
+                NodeList nl = rapportDocXML.getElementsByTagName("mutant");
+                for(int i = 0 ; i< nl.getLength();i++){
+                    writer.println("<div>MUTANT "+i+" : </div>");
+                    writer.println("<div>Contient les processors : </div>");
+                    NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
+
+                    NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
+                    for(int j =0 ; j< nlChildProcessors.getLength() ; j++){
+                        writer.println("<div>"+nlChildProcessors.item(j).getTextContent()+"</div>");
+                    }
+
+                    NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
+
+                    writer.println("<div>TESTS : </div>");
+                    boolean isAlive = false;
+                    for(int ind=0;ind<nlChildTests.getLength();ind++){
+                        //Element e = (Element)nlChildTests.item(i);
+                        writer.println("<div>Dans la classe "+nlChildTests.item(ind).getAttributes().getNamedItem("name")+" : </div>");
+
+                        for(int indj = 0 ; indj<nlChildTests.item(ind).getChildNodes().getLength();indj++){
+                            isAlive=false;
+                            if(nlChildTests.item(ind).getChildNodes().item(indj).hasChildNodes()) {
+                                writer.println("<div>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[DEAD] </div>");
+                            }
+                            else{
+                                writer.println("<div>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[ALIVE] </div>");
+                                isAlive = true;
+                            }
+                        }
+                    }
+                    if(isAlive){
+                        mutantVivant++;
+                    }
+                    else{
+                        mutantMort++;
+                    }
+                }
+
+                float percentageAlive = (mutantVivant*100)/mutantTotal;
+                float percentageDead = (mutantMort*100)/mutantTotal;
+
+                writer.println("<div id=\"container\" style=\"min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto\"></div>");
+                writer.println("<script>\n" +
+                        "$(function () {\n" +
+                        "    $('#container').highcharts({\n" +
+                        "        chart: {\n" +
+                        "            plotBackgroundColor: null,\n" +
+                        "            plotBorderWidth: null,\n" +
+                        "            plotShadow: false,\n" +
+                        "            type: 'pie'\n" +
+                        "        },\n" +
+                        "        title: {\n" +
+                        "            text: 'Pourcentage mutant tué / mutant vivant'\n" +
+                        "        },\n" +
+                        "        tooltip: {\n" +
+                        "            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'\n" +
+                        "        },\n" +
+                        "        plotOptions: {\n" +
+                        "            pie: {\n" +
+                        "                allowPointSelect: true,\n" +
+                        "                cursor: 'pointer',\n" +
+                        "                dataLabels: {\n" +
+                        "                    enabled: true,\n" +
+                        "                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',\n" +
+                        "                    style: {\n" +
+                        "                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'\n" +
+                        "                    }\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "        },\n" +
+                        "        series: [{\n" +
+                        "            name: 'Brands',\n" +
+                        "            colorByPoint: true,\n" +
+                        "            data: [{\n" +
+                        "                name: 'Mutant tué',\n" +
+                        "                y: "+percentageDead+"\n" +
+                        "            },{\n" +
+                        "                name: 'Mutant vivant',\n" +
+                        "                y: "+percentageAlive+"\n" +
+                        "            }]\n" +
+                        "        }]\n" +
+                        "    });\n" +
+                        "});\n" +
+                        "</script>");
+
+
+                writer.println("</body>");
+                writer.println("</html>");
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        fXmlFile.delete();//on supprime le fichier tmpReport.xml
+    }
+
     private void generateHtml(Node processors) {
         File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
         if (!dirTarget.exists()) {
@@ -318,6 +455,7 @@ public class AppMojo extends AbstractMojo {
 
         /**DEBUT GENERATION HTML**/
 
+        /**
         if (new File(project.getBasedir() + "/target/surefire-reports").exists()) {
             File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
             if (!dirTarget.exists()) {
@@ -397,7 +535,8 @@ public class AppMojo extends AbstractMojo {
             }
 
         }
-
+**/
+        generateRapportHighChart();
         /**FIN GENERATION HTML**/
 
     }
