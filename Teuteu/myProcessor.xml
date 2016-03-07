@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <myprocessors>
     <processors>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-    </processors>
-    <processors>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-    </processors>
-    <processors>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        <processor>miam.bouffe.transformation.IfProcessor</processor>
     </processors>
 </myprocessors>
