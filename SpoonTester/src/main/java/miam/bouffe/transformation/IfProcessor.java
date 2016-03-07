@@ -1,5 +1,6 @@
 package miam.bouffe.transformation;
 
+import miam.bouffe.selectors.IfSelector;
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtElement;
@@ -10,11 +11,13 @@ import spoon.support.reflect.code.CtLiteralImpl;
  */
 public class IfProcessor extends AbstractProcessor<CtIf> {
 
-
+        private IfSelector decider = new IfSelector();
     @Override
     public boolean isToBeProcessed(CtIf candidate) {
+
+
         // pour le moment
-        return true;
+        return decider.decide(candidate);
     }
 
 

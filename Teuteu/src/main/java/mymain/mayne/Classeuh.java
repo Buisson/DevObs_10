@@ -17,8 +17,8 @@ public class Classeuh {
         for (int i  = 0 ; i < 8; i++){
             if(3 < 4){
             }
-
-            if(true){
+                String a =null ;
+            if(a == null){
             }
 
         }
