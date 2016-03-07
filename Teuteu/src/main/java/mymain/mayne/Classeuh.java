@@ -17,6 +17,10 @@ public class Classeuh {
         for (int i  = 0 ; i < 8; i++){
             if(3 < 4){
             }
+                String a =null ;
+            if(a == null){
+            }
+
         }
         return 7+3;
     }
