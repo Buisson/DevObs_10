@@ -18,6 +18,9 @@ public class Classeuh {
             if(3 < 4){
             }
                 String a =null ;
+            if(a != null){
+            }
+
             if(a == null){
             }
 

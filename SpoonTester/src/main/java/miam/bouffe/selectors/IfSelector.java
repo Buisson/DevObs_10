@@ -1,5 +1,6 @@
 package miam.bouffe.selectors;
 
+import spoon.reflect.code.BinaryOperatorKind;
 import spoon.reflect.code.CtIf;
 import spoon.support.reflect.code.CtBinaryOperatorImpl;
 
@@ -16,8 +17,8 @@ public class IfSelector {
 
 
         if( candidate.getCondition() instanceof CtBinaryOperatorImpl){
-
-            return ! ((CtBinaryOperatorImpl) candidate.getCondition()).getRightHandOperand().toString().equals("null");
+            CtBinaryOperatorImpl condition = ((CtBinaryOperatorImpl) candidate.getCondition());
+            return ! (condition.getRightHandOperand().toString().equals("null"));
         }
 
         return true;
