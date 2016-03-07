@@ -2,24 +2,12 @@
 <myprocessors>
     <processors>
         <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+    </processors>
+    <processors>
+        <processor>miam.bouffe.CatchProcessor</processor>
     </processors>
     <processors>
         <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-    </processors>
-    <processors>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
         <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
     </processors>
 </myprocessors>
