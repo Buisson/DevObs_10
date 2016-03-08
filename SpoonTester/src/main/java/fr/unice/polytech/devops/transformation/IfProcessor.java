@@ -13,12 +13,8 @@ public class IfProcessor extends AbstractProcessor<CtIf> {
         private IfSelector decider = new IfSelector();
     @Override
     public boolean isToBeProcessed(CtIf candidate) {
-
-
-        // pour le moment
         return decider.decide(candidate);
     }
-
 
     @Override
     public void process(CtIf ctIf) {

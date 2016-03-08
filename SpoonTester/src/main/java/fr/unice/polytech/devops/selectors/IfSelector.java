@@ -9,18 +9,11 @@ import spoon.support.reflect.code.CtBinaryOperatorImpl;
  */
 public class IfSelector {
 
-
-
-
-
   public boolean decide(CtIf candidate){
-
-
         if( candidate.getCondition() instanceof CtBinaryOperatorImpl){
             CtBinaryOperatorImpl condition = ((CtBinaryOperatorImpl) candidate.getCondition());
             return ! (condition.getRightHandOperand().toString().equals("null"));
         }
-
         return true;
     }
 }

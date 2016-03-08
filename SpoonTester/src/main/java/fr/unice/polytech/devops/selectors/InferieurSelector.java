@@ -11,7 +11,6 @@ import spoon.reflect.visitor.Filter;
  */
 public class InferieurSelector {
 
-
     public boolean decide(CtElement candidate){
         Filter<CtFor> var1 = new Filter<CtFor>() {
             @Override

@@ -10,10 +10,6 @@ import spoon.reflect.declaration.CtElement;
 public class BinaryOperatorMutator extends AbstractProcessor<CtElement> {
     private BinaryOperatorMutatorSelector decider = new BinaryOperatorMutatorSelector();
 
-
-
-
-
     @Override
     public boolean isToBeProcessed(CtElement candidate) {
         return candidate instanceof CtBinaryOperator && decider.decide(candidate);

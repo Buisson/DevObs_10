@@ -26,7 +26,6 @@ public class InferieurProcessor   extends AbstractProcessor<CtElement> {
             CtBinaryOperator op = (CtBinaryOperator)candidate;
             if(op.getKind().equals(BinaryOperatorKind.LT)){
                 op.setKind(BinaryOperatorKind.LE);
-                System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh");
             }
 
         }
