@@ -1,4 +1,4 @@
-package miam.bouffe;
+package fr.unice.polytech.devops;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -99,7 +99,55 @@ public class AppMojo extends AbstractMojo {
                 writer.println("#tableMutants{border:1px solid;margin:0 auto;}" +
                         "#tableMutants td{border:1px solid;}" +
                         ".aliveMut{background-color:red;}" +
-                        ".deadMut{background-color:green;}");
+                        ".deadMut{background-color:green;}" +
+                        "#titre{"+
+                            "text-align: center;\n" +
+                            "background-color: rgb(117, 206, 193);\n" +
+                            "height: 23px;\n" +
+                            "padding: 10px 0px;\n" +
+                            "border: 3px solid;\n" +
+                            "-webkit-border-top-left-radius: 30px;\n" +
+                            "-webkit-border-bottom-right-radius: 30px;\n" +
+                            "-moz-border-radius-topleft: 30px;\n" +
+                            "-moz-border-radius-bottomright: 30px;\n" +
+                            "border-top-left-radius: 30px;\n" +
+                            "border-bottom-right-radius: ;" +
+                        "}" +
+                        ".titreMutant{" +
+                            "background-color: rgb(132, 131, 7);\n" +
+                            "margin-top: 10px;\n" +
+                            "padding-left: 6px;\n" +
+                            "padding: 10px;" +
+                        "}"+
+                        ".titreProcessors{" +
+                            "border: 1px solid;"+
+                            "margin-top: 5px;" +
+                        "}"+
+                        ".processor{"+
+                            "margin-left: 20px;\n" +
+                            "border: 1px solid;"+
+                        "}"+
+                        ".titreTests{"+
+                            "margin-left: 30px;\n" +
+                            "border-top: 1px solid;\n" +
+                            "border-left: 1px solid;\n" +
+                            "border-right: 1px solid;"+
+                        "}"+
+                        ".titreClass {\n" +
+                        "    margin-left: 30px;\n" +
+                        "    border: 1px solid;\n" +
+                        "}"+
+                        ".testFail {\n" +
+                        "    margin-left: 45px;\n" +
+                        "    border: 1px solid;\n" +
+                        "    background-color: lightgreen;\n" +
+                        "}"+
+                        ".testSuccess {\n" +
+                        "    margin-left: 45px;\n" +
+                        "    border: 1px solid;\n" +
+                        "    background-color: red;\n" +
+                        "}"
+                );
                 writer.println("</style>");
                 writer.println("<meta charset=\"UTF-8\">");
                 writer.println("</head>");
@@ -107,42 +155,42 @@ public class AppMojo extends AbstractMojo {
                 int mutantVivant = 0;
                 int mutantMort = 0;
                 int mutantTotal = rapportDocXML.getElementsByTagName("mutant").getLength();
-
+                writer.println("<div id='titre'>Rapport des tests par mutation</div>");
                 NodeList nl = rapportDocXML.getElementsByTagName("mutant");
                 for(int i = 0 ; i< nl.getLength();i++){
-                    writer.println("<div>MUTANT "+i+" : </div>");
-                    writer.println("<div>Contient les processors : </div>");
+                    writer.println("<div class='titreMutant'>MUTANT "+(i+1)+" : </div>");
+                    writer.println("<div class='titreProcessors'>Contient les processors : </div>");
                     NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
 
                     NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
                     for(int j =0 ; j< nlChildProcessors.getLength() ; j++){
-                        writer.println("<div>"+nlChildProcessors.item(j).getTextContent()+"</div>");
+                        writer.println("<div class='processor'>"+nlChildProcessors.item(j).getTextContent()+"</div>");
                     }
 
                     NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
 
-                    writer.println("<div>TESTS : </div>");
-                    boolean isAlive = false;
+                    writer.println("<div class='titreTests'>TESTS : </div>");
+                    boolean isAlive = true;
                     for(int ind=0;ind<nlChildTests.getLength();ind++){
-                        //Element e = (Element)nlChildTests.item(i);
-                        writer.println("<div>Dans la classe "+nlChildTests.item(ind).getAttributes().getNamedItem("name")+" : </div>");
+                        writer.println("<div class='titreClass'>Dans la classe "+nlChildTests.item(ind).getAttributes().getNamedItem("name")+" : </div>");
 
                         for(int indj = 0 ; indj<nlChildTests.item(ind).getChildNodes().getLength();indj++){
-                            isAlive=false;
                             if(nlChildTests.item(ind).getChildNodes().item(indj).hasChildNodes()) {
-                                writer.println("<div>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[DEAD] </div>");
+                                writer.println("<div class='testFail'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[FAIL] dans la methode de test "+nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name")+"</div>");
+                                isAlive=false;
                             }
                             else{
-                                writer.println("<div>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[ALIVE] </div>");
-                                isAlive = true;
+                                writer.println("<div class='testSuccess'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[SUCESS] dans la methode de test "+nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name")+"</div>");
                             }
                         }
                     }
                     if(isAlive){
                         mutantVivant++;
+                        writer.println("<div style='background-color:red;'>Mutant"+i+1+" vivant</div>");
                     }
                     else{
                         mutantMort++;
+                        writer.println("<div style='background-color:lightgreen'>Mutant"+(i+1)+" tué</div>");
                     }
                 }
 
@@ -318,7 +366,6 @@ public class AppMojo extends AbstractMojo {
             }
 
             DOMSource source = new DOMSource(doc);
-            System.out.println("\n\n\n\n\nFile\n\n\n\n\n");
             StreamResult result = new StreamResult(tmpReport);
             try {
                 transformer.transform(source, result);
@@ -368,7 +415,6 @@ public class AppMojo extends AbstractMojo {
         /**Vide dans le pom.xml ce que la balise processors contient**/
         int firstItemIndex = getFirstElementIndex(doc.getElementsByTagName("processors"));
         int longNode = doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().getLength();
-        System.out.println("LONGEUUUUUR : longTMP : "+longNode);
         if (firstItemIndex != -1) {
             for (int i = 0; i < longNode; i++) {
                 if (doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i) != null) {
@@ -419,9 +465,8 @@ public class AppMojo extends AbstractMojo {
 
         /**APPELLE RECURSIF MAVEN**/
         try {
-            System.out.println("TAILLE : " + tailleProcessors);
             if (tailleProcessors != 0) {
-                System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
+                //System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
                 int index = getFirstElementIndex(doc.getElementsByTagName("processors"));
                         //doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
@@ -438,7 +483,7 @@ public class AppMojo extends AbstractMojo {
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                 Process p = pb.start();
                 p.waitFor();
-                System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+                //System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
             } else {
                 //Fin des appels recursif
                 //tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
@@ -448,94 +493,7 @@ public class AppMojo extends AbstractMojo {
             e.printStackTrace();
         }
 
-/** TMP liste de processeurs :
- * ###########################
- * <processor>miam.bouffe.CatchProcessor</processor><processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
- **/
-
-        /**DEBUT GENERATION HTML**/
-
-        /**
-        if (new File(project.getBasedir() + "/target/surefire-reports").exists()) {
-            File dirTarget = new File(project.getBasedir() + "/target/mutation-report");
-            if (!dirTarget.exists()) {
-                dirTarget.mkdir();
-            }
-
-            try {
-                List<NodeList> nlList = new ArrayList<NodeList>();
-                File htmlReport = new File(project.getBasedir() + "/target/mutation-report/htmlReport.html");
-                for (File fXmlFile : new File(project.getBasedir() + "/target/surefire-reports").listFiles()) {
-                    String extension = FilenameUtils.getExtension(fXmlFile.getName());
-                    if (extension.equals("xml")) {
-                        if (!htmlReport.exists()) {
-                            htmlReport.createNewFile();
-                        }
-                        dBuilder = dbFactory.newDocumentBuilder();
-                        doc = dBuilder.parse(fXmlFile);
-                        System.out.println("ROOT : " + doc.getDocumentElement().getNodeName());
-
-                        NodeList nl = doc.getElementsByTagName("testcase");
-                        nlList.add(nl);
-                    }
-                }
-                PrintWriter writer = new PrintWriter(htmlReport.getAbsolutePath(), "UTF-8");
-
-                writer.println("<!DOCTYPE html>");
-                writer.println("<html>");
-                writer.println("<head>");
-                writer.println("<title>Mutation Report</title>");
-                writer.println("<style>");
-                writer.println("#tableMutants{border:1px solid;margin:0 auto;}" +
-                        "#tableMutants td{border:1px solid;}" +
-                        ".aliveMut{background-color:red;}" +
-                        ".deadMut{background-color:green;}");
-                writer.println("</style>");
-                writer.println("<meta charset=\"UTF-8\">");
-                writer.println("</head>");
-                writer.println("<body>");
-                int mutantVivant = 0;
-                int mutantMort = 0;
-                for (NodeList nl : nlList) {
-                    //System.out.println("########DANS NLIST!##########");
-                    String className = "";
-                    for (int i = 0; i < nl.getLength(); i++) {
-                        Element elem = (Element) nl.item(i);
-                        if (className.isEmpty()) {
-                            className = elem.getAttribute("classname");
-                            writer.println("<div style='border: 1px solid;background-color: #EEE'>Dans la classe : " + className + "</div>");
-                            writer.println("<table id='tableMutants'><tr><td>Mutant Vivant</td><td>Mutant Tué</td></tr>");
-                        }
-                        if (elem.getChildNodes().getLength() == 0) {
-                            writer.println("<tr><td class='aliveMut'>Dans la methode " + elem.getAttribute("name") + "</td><td></td></tr>");
-                            mutantVivant++;
-                        } else {
-                            writer.println("<tr><td></td><td class='deadMut'>Dans la methode " + elem.getAttribute("name") + "</td></tr>");
-                            mutantMort++;
-                        }
-                    }
-                    writer.println("</table>");
-                    writer.println("<div style='text-align: center;'>Nombre de Mutants vivant : " + mutantVivant + "</div>");
-                    writer.println("<div style='text-align: center;'>Nombre de Mutants mort : " + mutantMort + "</div>");
-                    float porcentageDeadMut = ((float) mutantMort / ((float) mutantMort + (float) mutantVivant)) * 100;
-                    float porcentageAliveMut = (((float) mutantVivant / ((float) mutantMort + (float) mutantVivant)) * 100);
-                    writer.println("<div style='text-align: center;'>% de Mutants mort : " + porcentageDeadMut + "% </div>");
-                    writer.println("<div style='text-align: center;'>% de Mutants vivant : " + porcentageAliveMut + "% </div>");
-                }
-                writer.println("</body>");
-                writer.println("</html>");
-                writer.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
-                e.printStackTrace();
-            }
-
-        }
-**/
+        /**Appel generation HTML**/
         generateRapportHighChart();
         /**FIN GENERATION HTML**/
 

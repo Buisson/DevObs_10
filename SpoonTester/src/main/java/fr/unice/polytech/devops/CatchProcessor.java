@@ -1,4 +1,4 @@
-package miam.bouffe;
+package fr.unice.polytech.devops;
 
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.CtBlock;

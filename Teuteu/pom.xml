@@ -38,7 +38,7 @@
                 </executions>
                 <configuration>
                     <!--<processor>miam.bouffe.CatchProcessor</processor><processor>miam.bouffe.transformation.NotNullCheckAdderProcessor</processor><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>-->
-                    <processors><processor>miam.bouffe.transformation.BinaryOperatorMutator</processor></processors>
+                    <processors><processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor></processors>
                 </configuration>
                 <!-- To be sure that you use the latest version of Spoon, specify it as dependency. -->
                 <dependencies>

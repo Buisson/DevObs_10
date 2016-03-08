@@ -1,6 +1,6 @@
-package miam.bouffe.transformation;
+package fr.unice.polytech.devops.transformation;
 
-import miam.bouffe.selectors.InferieurSelector;
+import fr.unice.polytech.devops.selectors.InferieurSelector;
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.BinaryOperatorKind;
 import spoon.reflect.code.CtBinaryOperator;

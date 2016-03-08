@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <myprocessors>
     <processors>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
     </processors>
     <processors>
-        <processor>miam.bouffe.CatchProcessor</processor>
+        <processor>fr.unice.polytech.devops.CatchProcessor</processor>
     </processors>
     <processors>
-        <processor>miam.bouffe.transformation.InferieurProcessor</processor>
-        <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        <processor>fr.unice.polytech.devops.transformation.InferieurProcessor</processor>
+        <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
     </processors>
 </myprocessors>

@@ -1,9 +1,8 @@
-package miam.bouffe.transformation;
+package fr.unice.polytech.devops.transformation;
 
-import miam.bouffe.selectors.IfSelector;
+import fr.unice.polytech.devops.selectors.IfSelector;
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
-import spoon.reflect.declaration.CtElement;
 import spoon.support.reflect.code.CtLiteralImpl;
 
 /**

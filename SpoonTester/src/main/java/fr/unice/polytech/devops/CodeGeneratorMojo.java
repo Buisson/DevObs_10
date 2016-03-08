@@ -1,4 +1,4 @@
-package miam.bouffe;
+package fr.unice.polytech.devops;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

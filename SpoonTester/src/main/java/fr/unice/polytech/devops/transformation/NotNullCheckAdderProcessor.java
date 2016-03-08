@@ -1,4 +1,4 @@
-package miam.bouffe.transformation;
+package fr.unice.polytech.devops.transformation;
 
 import spoon.reflect.code.CtCodeSnippetStatement;
 import spoon.reflect.declaration.CtExecutable;

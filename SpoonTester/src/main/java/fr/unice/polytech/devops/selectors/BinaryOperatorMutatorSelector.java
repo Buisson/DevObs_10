@@ -1,4 +1,4 @@
-package miam.bouffe.selectors;
+package fr.unice.polytech.devops.selectors;
 
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtFor;
