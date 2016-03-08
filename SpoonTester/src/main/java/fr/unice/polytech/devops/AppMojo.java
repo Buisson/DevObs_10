@@ -277,7 +277,6 @@ public class AppMojo extends AbstractMojo {
     }
 
     private void generateHtml(Node processors, int a) {
-        System.out.println("########################### BEGIN GENERATE HTML ###############################################");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         Document doc;
         Document testDoc;
@@ -354,7 +353,6 @@ public class AppMojo extends AbstractMojo {
             }
             mutantElement.appendChild(testsElement);
             mutants.appendChild(mutantElement);
-            //doc.appendChild(mutantElement);
 
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -469,9 +467,6 @@ public class AppMojo extends AbstractMojo {
                 //System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
 
                 int index = getFirstElementIndex(doc.getElementsByTagName("processors"));
-                        //doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
-                //TODO ici enregistrer les fichiers de test.
-                System.out.println("########################### BEFORE GENERATE HTML ###############################################");
                 generateHtml(doc.getElementsByTagName("processors").item(index));
 
                 String mvnCallString = "mvn";
@@ -486,9 +481,18 @@ public class AppMojo extends AbstractMojo {
                 //System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
             } else {
                 //Fin des appels recursif
-                //tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
+                firstItemIndex = getFirstElementIndex(doc.getElementsByTagName("processors"));
+                longNode = doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().getLength();
+                for (int i = longNode - 1; i >= 0; i--) {
+                    if (doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i) != null) {
+                        doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i));
+                    }
+                }
+                source = new DOMSource(doc);
+                result = new StreamResult(new File(project.getBasedir() + "/pom.xml"));
+                transformer.transform(source, result);
             }
-            System.out.println("DELETE : " + tmpProcessorsXML.delete());//On supprimme le fichier temporaire.
+            tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
         } catch (Exception e) {
             e.printStackTrace();
         }
