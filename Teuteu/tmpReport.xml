@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mutants>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="mTest">
+                    <message>expected:&lt;4&gt; but was:&lt;10&gt;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="ttTest"/>
+                <test name="mTest">
+                    <message>expected:&lt;10&gt; but was:&lt;5&gt;</message>
+                </test>
+                <test name="tTest"/>
+            </class>
+        </tests>
+    </mutant>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.CatchProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="mTest">
+                    <message>expected:&lt;4&gt; but was:&lt;10&gt;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="ttTest"/>
+                <test name="mTest">
+                    <message>expected:&lt;10&gt; but was:&lt;5&gt;</message>
+                </test>
+                <test name="tTest"/>
+            </class>
+        </tests>
+    </mutant>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.CatchProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="initializationError">
+                    <message>Lmymain/mayne/Classeuh;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="initializationError">
+                    <message>Lmymain/mayne/Main;</message>
+                </test>
+            </class>
+        </tests>
+    </mutant>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="mTest">
+                    <message>expected:&lt;4&gt; but was:&lt;10&gt;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="ttTest"/>
+                <test name="mTest">
+                    <message>expected:&lt;10&gt; but was:&lt;5&gt;</message>
+                </test>
+                <test name="tTest"/>
+            </class>
+        </tests>
+    </mutant>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.CatchProcessor</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="mTest">
+                    <message>expected:&lt;4&gt; but was:&lt;10&gt;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="ttTest"/>
+                <test name="mTest">
+                    <message>expected:&lt;10&gt; but was:&lt;5&gt;</message>
+                </test>
+                <test name="tTest"/>
+            </class>
+        </tests>
+    </mutant>
+    <mutant>
+        <processors>
+            <processor>miam.bouffe.transformation.InferieurProcessor</processor>
+            <processor>miam.bouffe.transformation.BinaryOperatorMutator</processor>
+        </processors>
+        <tests>
+            <class name="mymain.mayne.ClasseuhTest">
+                <test name="initializationError">
+                    <message>Lmymain/mayne/Classeuh;</message>
+                </test>
+            </class>
+            <class name="mymain.mayne.MainTest">
+                <test name="initializationError">
+                    <message>Lmymain/mayne/Main;</message>
+                </test>
+            </class>
+        </tests>
+    </mutant>
+</mutants>
