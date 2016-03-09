@@ -98,6 +98,9 @@ public class XMLGenerator {
                         "    margin-left: 45px;\n" +
                         "    border: 1px solid;\n" +
                         "    background-color: red;\n" +
+                        "}"+
+                        "#mutant0{"+
+                        "display:none;"+
                         "}"
                 );
                 writer.println("</style>");
@@ -110,7 +113,8 @@ public class XMLGenerator {
                 writer.println("<div id='titre'>Rapport des tests par mutation</div>");
                 NodeList nl = rapportDocXML.getElementsByTagName("mutant");
                 for(int i = 0 ; i< nl.getLength();i++){
-                    writer.println("<div class='titreMutant'>MUTANT "+(i+1)+" : </div>");
+                    writer.println("<div id='mutant"+i+"'>");
+                    writer.println("<div class='titreMutant'>MUTANT "+i+" : </div>");
                     writer.println("<div class='titreProcessors'>Contient les processors : </div>");
                     NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
 
@@ -138,12 +142,13 @@ public class XMLGenerator {
                     }
                     if(isAlive){
                         mutantVivant++;
-                        writer.println("<div style='background-color:red;'>Mutant"+i+1+" vivant</div>");
+                        writer.println("<div style='background-color:red;'>Mutant"+i+" vivant</div>");
                     }
                     else{
                         mutantMort++;
-                        writer.println("<div style='background-color:lightgreen'>Mutant"+(i+1)+" tué</div>");
+                        writer.println("<div style='background-color:lightgreen'>Mutant"+i+" tué</div>");
                     }
+                    writer.println("</div>");
                 }
 
                 float percentageAlive = (mutantVivant*100)/mutantTotal;

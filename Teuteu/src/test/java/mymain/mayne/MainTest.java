@@ -29,4 +29,7 @@ public class MainTest {
     public void ttTest() {
         assertTrue(true);
     }
+
+    @Test
+    public void retTrue(){assertTrue(main.retTrue());}
 }

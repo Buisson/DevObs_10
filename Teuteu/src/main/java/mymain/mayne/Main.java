@@ -1,7 +1,5 @@
 package mymain.mayne;
 
-import java.io.BufferedInputStream;
-import org.junit.Assert;
 import org.junit.runner.JUnitCore;
 
 public class Main {
@@ -14,5 +12,12 @@ public class Main {
 
     public int m() {
         return 2 + 3;
+    }
+
+    public boolean retTrue(){
+        if(false){
+            return false;
+        }
+        return true;
     }
 }
