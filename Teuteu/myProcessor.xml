@@ -4,9 +4,6 @@
         <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
     </processors>
     <processors>
-        <processor>fr.unice.polytech.devops.CatchProcessor</processor>
-    </processors>
-    <processors>
         <processor>fr.unice.polytech.devops.transformation.InferieurProcessor</processor>
         <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
     </processors>

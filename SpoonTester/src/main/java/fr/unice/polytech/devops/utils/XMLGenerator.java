@@ -1,21 +1,12 @@
-package fr.unice.polytech.devops;
+package fr.unice.polytech.devops.utils;
 
-import fr.unice.polytech.devops.utils.NodeHelper;
-import fr.unice.polytech.devops.utils.XMLGenerator;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -24,34 +15,15 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "rapport")
-public class AppMojo extends AbstractMojo {
+public class XMLGenerator {
 
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    private MavenProject project;
-
-    private int getLengthRealElement(NodeList nodes){
-        int length = 0;
-        for (int i = 0; i < nodes.getLength(); i++) {
-            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
-                length++;
-            }
-        }
-        return length;
-    }
-
-    private void generateRapportHighChart(){
+    public static void generateRapportHighChart(String projectPath){
         Document rapportDocXML=null;
-        File fXmlFile = new File(project.getBasedir() + "/tmpReport.xml");
+        File fXmlFile = new File(projectPath + "/tmpReport.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         if (fXmlFile.exists()) {
             try {
@@ -65,7 +37,7 @@ public class AppMojo extends AbstractMojo {
             try {
                 List<NodeList> nlList = new ArrayList<NodeList>();
 
-                File htmlReport = new File(project.getBasedir() + "/target/mutation-report/htmlReport.html");
+                File htmlReport = new File(projectPath + "/target/mutation-report/htmlReport.html");
                 PrintWriter writer = new PrintWriter(htmlReport.getAbsolutePath(), "UTF-8");
 
                 writer.println("<!DOCTYPE html>");
@@ -81,37 +53,37 @@ public class AppMojo extends AbstractMojo {
                         ".aliveMut{background-color:red;}" +
                         ".deadMut{background-color:green;}" +
                         "#titre{"+
-                            "text-align: center;\n" +
-                            "background-color: rgb(117, 206, 193);\n" +
-                            "height: 23px;\n" +
-                            "padding: 10px 0px;\n" +
-                            "border: 3px solid;\n" +
-                            "-webkit-border-top-left-radius: 30px;\n" +
-                            "-webkit-border-bottom-right-radius: 30px;\n" +
-                            "-moz-border-radius-topleft: 30px;\n" +
-                            "-moz-border-radius-bottomright: 30px;\n" +
-                            "border-top-left-radius: 30px;\n" +
-                            "border-bottom-right-radius: ;" +
+                        "text-align: center;\n" +
+                        "background-color: rgb(117, 206, 193);\n" +
+                        "height: 23px;\n" +
+                        "padding: 10px 0px;\n" +
+                        "border: 3px solid;\n" +
+                        "-webkit-border-top-left-radius: 30px;\n" +
+                        "-webkit-border-bottom-right-radius: 30px;\n" +
+                        "-moz-border-radius-topleft: 30px;\n" +
+                        "-moz-border-radius-bottomright: 30px;\n" +
+                        "border-top-left-radius: 30px;\n" +
+                        "border-bottom-right-radius: ;" +
                         "}" +
                         ".titreMutant{" +
-                            "background-color: rgb(132, 131, 7);\n" +
-                            "margin-top: 10px;\n" +
-                            "padding-left: 6px;\n" +
-                            "padding: 10px;" +
+                        "background-color: rgb(132, 131, 7);\n" +
+                        "margin-top: 10px;\n" +
+                        "padding-left: 6px;\n" +
+                        "padding: 10px;" +
                         "}"+
                         ".titreProcessors{" +
-                            "border: 1px solid;"+
-                            "margin-top: 5px;" +
+                        "border: 1px solid;"+
+                        "margin-top: 5px;" +
                         "}"+
                         ".processor{"+
-                            "margin-left: 20px;\n" +
-                            "border: 1px solid;"+
+                        "margin-left: 20px;\n" +
+                        "border: 1px solid;"+
                         "}"+
                         ".titreTests{"+
-                            "margin-left: 30px;\n" +
-                            "border-top: 1px solid;\n" +
-                            "border-left: 1px solid;\n" +
-                            "border-right: 1px solid;"+
+                        "margin-left: 30px;\n" +
+                        "border-top: 1px solid;\n" +
+                        "border-left: 1px solid;\n" +
+                        "border-right: 1px solid;"+
                         "}"+
                         ".titreClass {\n" +
                         "    margin-left: 30px;\n" +
@@ -234,126 +206,120 @@ public class AppMojo extends AbstractMojo {
         fXmlFile.delete();//on supprime le fichier tmpReport.xml
     }
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        getLog().info("Debut du Plugin Maven de Mutation");
+    public static boolean generateXmlFromProcessors(Node processors, String projectPath) {
+        File dirTarget = new File(projectPath + "/target/mutation-report");
+        if (!dirTarget.exists()) {
+            dirTarget.mkdir();
+        }
 
-        /**MODIFICATION DU POM**/
-        //TODO Voir le probleme des child (surement faire un trim quelque part ...)
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = null;
-        Document doc = null;
-        Document docProcessor = null;
-
-        File pomXML = new File(project.getBasedir() + "/pom.xml"); //Fichier pom.xml
-        File tmpProcessorsXML = new File(project.getBasedir() + "/tmpMyProcessor.xml"); //Fichier temporaire myprocessor
-
+        File report = new File(projectPath + "/tmpReport.xml");
         try {
-            if (!tmpProcessorsXML.exists()) { //Si le fichier temporaire n'existe pas le creer.
-                Files.copy(Paths.get(project.getBasedir() + "/myProcessor.xml"), Paths.get(project.getBasedir() + "/tmpMyProcessor.xml"), StandardCopyOption.REPLACE_EXISTING);
-            }
-            /**Parseur xml stuff**/
-            dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(pomXML);
-            docProcessor = dBuilder.parse(tmpProcessorsXML);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        /**Sauvegarde de la taille avant suppression pour condition d'arret maven**/
-        //int tailleProcessors = docProcessor.getElementsByTagName("processors").getLength();
-        int tailleProcessors = getLengthRealElement(docProcessor.getElementsByTagName("processors"));
-
-        /**Vide dans le pom.xml ce que la balise processors contient**/
-        int firstItemIndex = NodeHelper.getFirstElementIndex(doc.getElementsByTagName("processors"));
-        int longNode = doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().getLength();
-        if (firstItemIndex != -1) {
-            for (int i = 0; i < longNode; i++) {
-                if (doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i) != null) {
-                    doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i));
-                }
-            }
-        }
-
-        if (tailleProcessors != 0) {
-            /**Ajout des processors dans le pom**/
-            int longTMP = docProcessor.getElementsByTagName("processors").item(0).getChildNodes().getLength();
-            //int longTMP = getLengthRealElement(docProcessor.getElementsByTagName("processors").item(0).getChildNodes());
-            Node tmpnode = docProcessor.getElementsByTagName("processors").item(0);
-            for (int i = 0; i < longTMP; i++) {
-                Element temporaryElement = doc.createElement("processor");
-                if ((tmpnode.getChildNodes().item(i).getNodeName() != null) && (tmpnode.getChildNodes().item(i).getNodeType() == Node.ELEMENT_NODE)) {
-                    temporaryElement.appendChild(doc.createTextNode(tmpnode.getChildNodes().item(i).getTextContent()));
-                    doc.getElementsByTagName("processors").item(0).appendChild(temporaryElement);
-                }
+            if (!report.exists()) {
+                report.createNewFile();
+                PrintWriter writer = new PrintWriter(report.getAbsolutePath(), "UTF-8");
+                writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                writer.println("<mutants>");
+                writer.println("</mutants>");
+                writer.close();
             }
 
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            Document reportDoc;
+            Document testDoc;
 
-            /**Suppression du premier element processors du fichier temporaire**/
+            List<NodeList> nList = new ArrayList<>();
+            reportDoc = dbFactory.newDocumentBuilder().parse(report);
 
-            docProcessor.getElementsByTagName("processors").item(0).getParentNode().removeChild(docProcessor.getElementsByTagName("processors").item(0));
-        }
+            NodeList mutantsList = reportDoc.getElementsByTagName("mutants");
+            Node mutants = mutantsList.item(NodeHelper.getLastElementIndex(mutantsList));
+            Element mutantElement = reportDoc.createElement("mutant");
+            Element processorsElement = reportDoc.createElement("processors");
 
-        /**Mise a jour des fichier xml (pom + tmpprocessor)**/
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = null;
-        try {
-            transformer = transformerFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        }
-        DOMSource source = new DOMSource(doc);
-        DOMSource sourceProcessors = new DOMSource(docProcessor);
-        StreamResult result = new StreamResult(new File(project.getBasedir() + "/pom.xml"));
-        StreamResult resultProcessors = new StreamResult(tmpProcessorsXML);
-        // Output to console for testing
-        //StreamResult result = new StreamResult(System.out);
-        try {
-            transformer.transform(source, result);//modifie le pom.xml
-            transformer.transform(sourceProcessors, resultProcessors); // modifie le myProcessor.xml
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+            NodeList processorsChildren = processors.getChildNodes();
 
-        /**APPELLE RECURSIF MAVEN**/
-        try {
-            if (tailleProcessors != 0) {
-                //System.out.println("################INVOCATION MAVEEEEEENNNNNNNNN##############################");
-
-                int index = NodeHelper.getFirstElementIndex(doc.getElementsByTagName("processors"));
-                XMLGenerator.generateXmlFromProcessors(doc.getElementsByTagName("processors").item(index), project.getBasedir().toString());
-
-                String mvnCallString = "mvn";
-                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                    mvnCallString += ".cmd";
+            for (int i = 0; i < processorsChildren.getLength(); i++) {
+                if (NodeHelper.isElementNode(processorsChildren.item(i))) {
+                    Element processorElement = reportDoc.createElement("processor");
+                    processorElement.setTextContent(processorsChildren.item(i).getTextContent());
+                    processorElement.setNodeValue(processorsChildren.item(i).getTextContent());
+                    processorsElement.appendChild(processorElement);
                 }
-                ProcessBuilder pb = new ProcessBuilder(mvnCallString, "package");//TODO remplacer par mvn test ?
-                pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-                Process p = pb.start();
-                p.waitFor();
-                //System.out.println("APRES INVOCATIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-            } else {
-                //Fin des appels recursif
-                firstItemIndex = NodeHelper.getFirstElementIndex(doc.getElementsByTagName("processors"));
-                longNode = doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().getLength();
-                for (int i = longNode - 1; i >= 0; i--) {
-                    if (doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i) != null) {
-                        doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i).getParentNode().removeChild(doc.getElementsByTagName("processors").item(firstItemIndex).getChildNodes().item(i));
+            }
+            mutantElement.appendChild(processorsElement);
+
+            Element testsElement = reportDoc.createElement("tests");
+
+            if (new File(projectPath + "/target/surefire-reports").exists()) {
+                File[] fileList = new File(projectPath + "/target/surefire-reports").listFiles();
+                if (fileList != null) {
+                    for (File fXmlFile : fileList) {
+                        if (FilenameUtils.getExtension((fXmlFile.getName())).toLowerCase().equals("xml")) {
+                            testDoc = dbFactory.newDocumentBuilder().parse(fXmlFile);
+                            Element classElement = reportDoc.createElement("class");
+                            int indexFirstTestSuite = NodeHelper.getFirstElementIndex(testDoc.getElementsByTagName("testcase"));
+                            if (indexFirstTestSuite != -1) {
+                                Element classname = (Element) testDoc.getElementsByTagName("testcase").item(indexFirstTestSuite);
+                                classElement.setAttribute("name", classname.getAttribute("classname"));
+                            }
+                            testsElement.appendChild(classElement);
+                            NodeList testsCases = testDoc.getElementsByTagName("testcase");
+                            for (int i = 0; i < testsCases.getLength(); i++) {
+                                Element testcase = (Element) testsCases.item(i);
+                                if (NodeHelper.isElementNode(testcase)) {
+                                    Element testElement = reportDoc.createElement("test");
+                                    testElement.setAttribute("name", testcase.getAttribute("name"));
+                                    NodeList children = testcase.getChildNodes();
+                                    if (children.getLength() != 0) {
+                                        int firstChildIndex = NodeHelper.getFirstElementIndex(children);
+                                        if (firstChildIndex != -1) {
+                                            Element message = reportDoc.createElement("message");
+                                            Element firstChild = (Element) children.item(firstChildIndex);
+                                            message.setTextContent(firstChild.getAttribute("message"));
+                                            testElement.appendChild(message);
+                                        }
+                                    }
+                                    classElement.appendChild(testElement);
+                                }
+                            }
+                        }
                     }
                 }
-                source = new DOMSource(doc);
-                result = new StreamResult(new File(project.getBasedir() + "/pom.xml"));
-                transformer.transform(source, result);
             }
-            tmpProcessorsXML.delete();//On supprimme le fichier temporaire.
-        } catch (Exception e) {
+
+            mutantElement.appendChild(testsElement);
+            mutants.appendChild(mutantElement);
+
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = null;
+
+            transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(reportDoc);
+            StreamResult result = new StreamResult(report);
+
+            transformer.transform(source, result);
+
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        } catch (TransformerException e) {
+            e.printStackTrace();
+            return false;
         }
-
-        /**Appel generation HTML**/
-        XMLGenerator.generateRapportHighChart(project.getBasedir().toString());
-        //generateRapportHighChart();
-        /**FIN GENERATION HTML**/
-
+        return true;
     }
 }
