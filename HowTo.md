@@ -70,7 +70,7 @@ Si votre projet n'utilise pas de plugin, ajoutez la portion suivante au même ni
 ```
 
 #### Exemple de fichier `pom.xml` d'un projet utilisant notre plugin
-Vous obtiendriez, par exemple le fichier complet suivant : 
+Vous obtiendriez par exemple le fichier complet suivant : 
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -160,21 +160,21 @@ Vous obtiendriez, par exemple le fichier complet suivant :
 ```
 
 #### Explication
-Notre plugin tire partie des fonctionnalités d'une bibliothèque nommée Spoon permettant la création de projets mutants. Lors de la phase `generate-sources` de `Maven`, les mutations sont effectuées sur le projet cible (votre projet).
-Par ces lignes, notre plugin est défini comme partie entière de la  `chaîne de build` de Maven, et sera déclenché après la phase `test` (afin de tester chacun des projets mutants créés).
+Notre plugin tire parti des fonctionnalités d'une bibliothèque nommée Spoon qui permet la création de projets mutants. Lors de la phase `generate-sources` de `Maven`, les mutations sont effectuées sur le projet cible (votre projet).
+Grâce à ce balisage, notre plugin est défini comme partie entière de la  `chaîne de build` de Maven, et sera déclenché après la phase `test` (afin de tester chacun des projets mutants créés).
 
 ### Créer un fichier de configuration à la racine de votre projet
 
 
-Il faut aussi que vous ajoutiez au même niveau que votre pom.xml un fichier `myProcessor.xml` qui contiendra la liste des mutations que vous voullez appliquer sur votre projet.
-Vous avez la possibilité de spécifier un package et/ou une méthode pour appliquer les mutation en ajoutant des attributs au éléments processor 
+Il faut aussi que vous ajoutiez au même niveau que votre pom.xml un fichier `myProcessor.xml` qui contiendra la liste des mutations que vous voulez appliquer sur votre projet.
+Vous avez la possibilité de spécifier un package et/ou une méthode pour appliquer les mutations en ajoutant des attributs aux éléments `<processor>` .
 
-Voici un exemple de se fichier :
+Voici un exemple de ce fichier :
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <myprocessors>
     <processors>
-        <!--Ajout d'un processor-->
+        <!--Ajout d'un processeur-->
         <processor methode="methode1">fr.unice.polytech.devops.transformation.IfProcessor</processor>
         <processor package="packageA">fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
 
@@ -187,21 +187,21 @@ Voici un exemple de se fichier :
 </myprocessors>
 ```
 
-### Nos differentes mutations
+### Nos différentes mutations
 
-Supprimer une condition
+#### Supprimer une condition
 
 `if(c){....} ==> if(true){....}`
 
-cette mutation s'applique à condition que le test n'est pas pour s'assurer qu'une variable n'est pas null, car dans ce cas mettre `true` au lieu de la vérification conduiras très probablement à `NullPointerException` ==> peut d’intérêts pour l'utilisateur
+Cette mutation s'applique à condition que le test ne compare pas une variable est null. Dans ce cas mettre `true` au lieu de la vérification conduira très probablement à un `NullPointerException` ==> peu d’intérêt pour l'utilisateur.
 
-Modifier une boucle
+#### Modifier une boucle
 
 `for( int i = 0 ; i < a ; i++ ==>  for( int i = 0 ; i <=a ; i++`  
 
-Dépasser les bords d'une liste ou d'un tableau est une source très courante d'erreurs, cette mutation permet alors de produire ce cas. elle permet aussi d'introduire une erreur dans le calcul que fait la boucle
+Dépasser les bornes d'une liste ou d'un tableau est une source d'erreurs très courante, cette mutation permet alors de provoquer ce cas de figure. Elle permet aussi d'introduire une erreur dans le calcul que fait la boucle.
 
-Operation binaire : 
+#### Opération binaire : 
 
 `for(a+b ==> a-b`  
 
@@ -212,5 +212,5 @@ Operation binaire :
 
 ### Rapport HTML généré
 
-Le rapport HTML généré se retrouve après le lancement d'un `mvn package` sur votre projet dans le dossier `target/mutation-report/htmlReport.html` de votre projet. Il contient plusieurs informations utiles de tout les mutants crée, les tests en rouge sont les tests qui sont passés, et les test en vert sont ceux qui ont échoués. Ensuite nous avons un diagramme circulaire qui montre le pourcentage de mutant vivant, tué et mort-né.
+Le rapport HTML généré se retrouve après le lancement d'un `mvn package` sur votre projet dans le dossier `target/mutation-report/htmlReport.html` de votre projet. Il contient plusieurs informations utiles de tout les mutants créés, les tests en rouge sont les tests qui sont validés, et les tests en vert sont ceux qui ont échoué. Ensuite nous avons un diagramme circulaire qui montre le pourcentage de mutants vivants, tués et mort-nés.
 
