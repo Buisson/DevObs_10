@@ -8,4 +8,4 @@ Pour commencer, il vous faudra tout d'abord récupérer les sources de notre pro
     `https://github.com/Buisson/DevObs_10/archive/master.zip`
 
 ### Installer le plugin
-En ligne de commande, se déplacer dans le dossier `SpoonTest` et lancer la commande `mvn install` pour installer notre plugin dans votre répertoire `Maven` (le dossier `.m2`).
+En ligne de commande, déplacez-vous dans le dossier `SpoonTest` et lancez la commande `mvn install` pour installer notre plugin dans votre répertoire `Maven` (le dossier `.m2`).
