@@ -68,6 +68,8 @@ Si votre projet n'utilise pas de plugin, ajoutez la portion suivante au même ni
         </plugins>
     </build>
 ```
+
+#### Exemple de fichier `pom.xml` d'un projet utilisant notre plugin
 Vous obtiendriez, par exemple le fichier complet suivant : 
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -157,8 +159,13 @@ Vous obtiendriez, par exemple le fichier complet suivant :
 </project>
 ```
 
+#### Explication
+Notre plugin tire partie des fonctionnalités d'une bibliothèque nommée Spoon permettant la création de projets mutants. Lors de la phase `generate-sources` de `Maven`, les mutations sont effectuées sur le projet cible (votre projet).
+Par ces lignes, notre plugin est défini comme partie entière de la  `chaîne de build` de Maven, et sera déclenché après la phase `test` (afin de tester chacun des projets mutants créés).
 
-Ce que cela fait c'est dire à maven que notre plugin participe à la phase de la génération du code (pour générer les mutants) et à la phase des tests (pour les tester)
+### Créer un fichier de configuration à la racine de votre projet
+
+
 Il faut aussi que vous ajoutiez au même niveau que votre pom.xml un fichier `myProcessor.xml` qui contiendra la liste des mutations que vous voullez appliquer sur votre projet.
 Vous avez la possibilité de spécifier un package et/ou une méthode pour appliquer les mutation en ajoutant des attributs au éléments processor 
 
