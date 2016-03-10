@@ -27,7 +27,7 @@ Dans le package `transformation` se trouvent les classes permettant d'appliquer 
 
 ### AppMojo.java
 
-Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différent mécanisme dont notre plugin a besoin à savoir : 
+Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différents mécanismes dont notre plugin a besoin de connaître : 
 
   - Lecture du fichier de configuration contenant les mutation à appliquer ;
   - Création du fichier temporaire qui va être modifié à chaque itération ;
