@@ -173,7 +173,7 @@ public class XMLGenerator {
                         "            type: 'pie'\n" +
                         "        },\n" +
                         "        title: {\n" +
-                        "            text: 'Pourcentage mutant tué / mutant vivant'\n" +
+                        "            text: 'Pourcentage mutant tué, mutant vivant et mutant mort-né sur un total de "+mutantTotal+" mutants'\n" +
                         "        },\n" +
                         "        tooltip: {\n" +
                         "            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'\n" +
@@ -192,16 +192,16 @@ public class XMLGenerator {
                         "            }\n" +
                         "        },\n" +
                         "        series: [{\n" +
-                        "            name: 'Brands',\n" +
+                        "            name: 'Pourcentage',\n" +
                         "            colorByPoint: true,\n" +
                         "            data: [{\n" +
-                        "                name: 'Mutant tué',\n" +
+                        "                name: '"+mutantMort+" Mutant tué',\n" +
                         "                y: "+percentageDead+"\n" +
                         "            },{\n" +
-                        "                name: 'Mutant vivant',\n" +
+                        "                name: '"+mutantVivant+" Mutant vivant',\n" +
                         "                y: "+percentageAlive+"\n" +
                         "            },{\n"+
-                        "                 name: 'Mutant Mort-né',\n "+
+                        "                 name: '"+mutantMortNe+" Mutant Mort-né',\n "+
                         "                 y: "+percentageStillBorn+" "+
                                     "}]\n" +
                         "        }]\n" +
