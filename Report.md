@@ -46,6 +46,6 @@ Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, 
   - Simplicité dans la configuration du plugin : Une balise `<processors></processors>` pour chaque mutant à créer, dans laquelle mettre des balises `<processor></processor>` pour chaque type de mutation à appliquer au mutant dans un fichier `myProcessor.xml`.
 
 ## Faiblesses
-  - Appel recursif à Maven dans notre plugin (durée d'execution plus élevé et danger au niveau mémoire).
-  - Peu de mutations implémenté.
-  - Selecteurs qui sont peu architecturé.
+  - Appel recursif à Maven dans notre plugin (durée d'execution plus élevée et danger au niveau mémoire).
+  - Peu de mutations implémentées.
+  - Selecteurs qui sont peu architecturés.
