@@ -8,24 +8,24 @@ SpoonTester
 └───src/main/java/fr/unice/polytech/devops
 |   │
 |   |
-|   ├───selectors/          #Contient les selecteurs pour nos mutations
+|   ├───selectors/          # Contient les selecteurs pour nos mutations
 |   |
-|   ├───transformation/     #contient nos processeurs Spoon qui appliquent differentes mutations
+|   ├───transformation/     # contient nos processeurs Spoon qui appliquent differentes mutations
 |   |
-|   ├───utils/              #contient differentes fonctions utilitaires (parseurs XML, etc...)
+|   ├───utils/              # contient differentes fonctions utilitaires (parseurs XML, etc...)
 |   |
-|   └───AppMojo.java        #Le mojo qui est appelé après la phase de test de Maven
+|   └───AppMojo.java        # Le mojo qui est appelé après la phase de test de Maven
 | 
 └───pom.xml
 ```
 
 ### Package selectors
-Dans le package selectors nous avons toute les classes Java qui permettent de gérer ou seront appliquer nos mutation. Ils posèdent tous une méthode `public boolean decide(Ct Element)` qui permet de savoir si on applique une mutation ou non selon différents critère qui sont définit pour un selecteur donné.
+Dans le package `selectors` se trouvent les classes permettant de gérer où seront appliquées nos mutations sur le code du projet. Elles posèdent toutes une méthode `public boolean decide(Ct Element)` permettant de savoir s'il faut appliquer ou non une mutation, selon différents critères définis pour un selecteur donné.
 
-###Package transformation
-Dans le package transformation nous avons toute les classes Java qui permettent d'appliquer les mutations sur les sources du projet qui appelle notre plugin. Toutes ces classes héritent de `AbstractProcessor<CtElement>` qui est une classe de Spoon et qui nous demande d'implémenter deux méthodes qui sont `boolean isToBeProcessed(CtElement candidate)` , qui permet d'utiliser nos selecteurs, et `void process(CtElement candidate)`, qui permet de modifier le source.
+### Package transformation
+Dans le package `transformation` se trouvent les classes permettant d'appliquer les mutations sur les sources du projet qui appelle notre plugin. Toutes ces classes héritent de la classe `AbstractProcessor<CtElement>`, une classe abstraite de la bibliothèque `Spoon` et qui nous demande d'implémenter deux méthodes qui sont `boolean isToBeProcessed(CtElement candidate)` , permettant d'utiliser nos selecteurs, et `void process(CtElement candidate)`, permettant de modifier le source.
 
-###AppMojo.java
+### AppMojo.java
 
 Cette class est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différent mécanisme dont notre plugin a besoin à savoir
 
