@@ -27,13 +27,13 @@ Dans le package `transformation` se trouvent les classes permettant d'appliquer 
 
 ### AppMojo.java
 
-Cette class est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différent mécanisme dont notre plugin a besoin à savoir
+Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différent mécanisme dont notre plugin a besoin à savoir : 
 
-  - Lecture du fichier de configurtion contenant les mutation à appliquer
-  - Création du fichier temporaire qui va être modéfier à chaque itération
-  - Lancer `maven package`, cela auras comme effet de lancer maven récursivement le test d’arrêt étant si oui ou non le fichier  emporaire est vide 
-  - Récuperer les résultats des tests après chaque itération
-  - Génerer le fichier HTML
+  - Lecture du fichier de configuration contenant les mutation à appliquer ;
+  - Création du fichier temporaire qui va être modifié à chaque itération ;
+  - Lancer `maven package` : cela aura comme effet de lancer maven récursivement, le test d’arrêt étant le nombre d'éléments présents dans le fichier temporaire ; 
+  - Récuperer les résultats des tests après chaque itération ;
+  - Génerer le fichier HTML.
 
 Le choix d'appeler maven récursivement 
 
