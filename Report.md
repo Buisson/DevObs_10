@@ -29,7 +29,7 @@ Dans le package `transformation` se trouvent les classes permettant d'appliquer 
 
 Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, sa méthode `execute ` se lance alors pendant la phase `generate`, et elle lance les différents mécanismes dont notre plugin a besoin de connaître : 
 
-  - Lecture du fichier de configuration contenant les mutation à appliquer ;
+  - Lecture du fichier de configuration contenant les mutations à appliquer ;
   - Création du fichier temporaire qui va être modifié à chaque itération ;
   - Lancer `maven package` : cela aura comme effet de lancer maven récursivement, le test d’arrêt étant le nombre d'éléments présents dans le fichier temporaire ; 
   - Récuperer les résultats des tests après chaque itération ;
