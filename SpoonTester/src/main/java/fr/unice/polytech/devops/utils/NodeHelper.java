@@ -26,4 +26,14 @@ public class NodeHelper {
         }
         return -1;
     }
+
+    public static int getLengthRealElement(NodeList nodes){
+        int length = 0;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
+                length++;
+            }
+        }
+        return length;
+    }
 }

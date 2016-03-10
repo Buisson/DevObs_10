@@ -32,15 +32,6 @@ public class AppMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
-    private int getLengthRealElement(NodeList nodes){
-        int length = 0;
-        for (int i = 0; i < nodes.getLength(); i++) {
-            if ((nodes.item(i) != null) && (nodes.item(i).getNodeType() == Node.ELEMENT_NODE)) {
-                length++;
-            }
-        }
-        return length;
-    }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Debut du Plugin Maven de Mutation");
@@ -68,7 +59,7 @@ public class AppMojo extends AbstractMojo {
         }
 
         /**Sauvegarde de la taille avant suppression pour condition d'arret maven**/
-        int tailleProcessors = getLengthRealElement(docProcessor.getElementsByTagName("processors"));
+        int tailleProcessors = NodeHelper.getLengthRealElement(docProcessor.getElementsByTagName("processors"));
 
         /**Vide dans le pom.xml ce que la balise processors contient**/
         int firstItemIndex = NodeHelper.getFirstElementIndex(doc.getElementsByTagName("processors"));

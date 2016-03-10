@@ -1,5 +1,6 @@
 package fr.unice.polytech.devops.selectors;
 
+import fr.unice.polytech.devops.configurable.PackageSelector;
 import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtFor;
 import spoon.reflect.declaration.CtElement;
@@ -11,12 +12,25 @@ import spoon.support.reflect.code.CtForImpl;
  */
 public class BinaryOperatorMutatorSelector {
 
+    PackageSelector selector = new PackageSelector();
+    boolean test = false;
+    private String MUTATION_NAME ="BinaryOperatorMutator";
+
 
     public boolean decide(CtElement candidate){
 
+        if(! test){
+            System.out.println("##########################################");
+            // System.out.println(candidate.getPosition().getFile().getAbsolutePath().split("src")[0] + "tmpMyProcessor.xml");
+            selector.fill(candidate.getPosition().getFile().getAbsolutePath().split("src")[0] + "myProcessor.xml");
+            test = true;
+        }
+
         CtBinaryOperator op = (CtBinaryOperator)candidate;
         CtFor loopParent = op.getParent(CtFor.class);
-        return !(loopParent == null);
+        System.out.println(loopParent != null);
+        System.out.println(selector.methodeAndPackageChecker(candidate,MUTATION_NAME));
+        return (loopParent == null) && selector.methodeAndPackageChecker(candidate,MUTATION_NAME);
 
 
 

@@ -1,5 +1,6 @@
 package fr.unice.polytech.devops.transformation;
 
+import fr.unice.polytech.devops.configurable.PackageSelector;
 import fr.unice.polytech.devops.selectors.IfSelector;
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
@@ -13,7 +14,9 @@ public class IfProcessor extends AbstractProcessor<CtIf> {
         private IfSelector decider = new IfSelector();
     @Override
     public boolean isToBeProcessed(CtIf candidate) {
-        return decider.decide(candidate);
+
+        return decider.decide(candidate) ;
+
     }
 
     @Override
@@ -21,5 +24,6 @@ public class IfProcessor extends AbstractProcessor<CtIf> {
         CtLiteralImpl<Boolean> a = new CtLiteralImpl<>();
         a.setValue(true);
         ctIf.setCondition(a);
+
     }
 }
