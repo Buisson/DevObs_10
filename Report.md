@@ -35,8 +35,10 @@ Cette class est l'entrée vers notre plugin, elle associée au goal `rapport`, s
   - Récuperer les résultats des tests après chaque itération
   - Génerer le fichier HTML
 
-
+Le choix d'appeler maven récursivement 
 ## Forces
+-Plugin maven : entièrement intégré à la chaîne de build, notre plugin intervient au bon moment pour générer les sources et les tester, il suffit pour l'utilisateur de modéfier le pom et de spécifier les mutation qu'il faut générer en modifiant un fichier de configuration.
+
 
 //TODO
 
