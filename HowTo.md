@@ -67,8 +67,9 @@ Pour ajouter notre plugin maven à votre propre projet maven, il faut ajouter da
         </plugins>
     </build>
 ```
-
+Ce que cela fait c'est dire à maven que notre plugin participe à la phase de la génération du code (pour générer les mutants) et à la phase des tests (pour les tester)
 Il faut aussi que vous ajoutiez au même niveau que votre pom.xml un fichier `myProcessor.xml` qui contiendra la liste des mutations que vous voullez appliquer sur votre projet.
+Vous avez la possibilité de spécifier un package et/ou une méthode pour appliquer les mutation en ajoutant des attributs au éléments processor 
 
 Voici un exemple de se fichier :
 ```
@@ -76,7 +77,9 @@ Voici un exemple de se fichier :
 <myprocessors>
     <processors>
         <!--Ajout d'un processor-->
-        <processor>fr.unice.polytech.devops.transformation.IfProcessor</processor>
+        <processor methode="methode1">fr.unice.polytech.devops.transformation.IfProcessor</processor>
+        <processor package="packageA">fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
+
     </processors>
     <processors>
         <!--Ajout de plusieurs processeurs-->
