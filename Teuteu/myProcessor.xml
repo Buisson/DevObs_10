@@ -6,6 +6,9 @@
     <processors>
         <processor>fr.unice.polytech.devops.transformation.IfProcessor</processor>
     </processors>
+    <processors>
+        <processor>fr.unice.polytech.devops.transformation.MortNeMutator</processor>
+    </processors>
     <!--
     <processors>
         <processor>fr.unice.polytech.devops.transformation.InferieurProcessor</processor>
