@@ -4,14 +4,16 @@
         <processor>fr.unice.polytech.devops.transformation.IfProcessor</processor>
     </processors>
     <processors>
-        <processor>fr.unice.polytech.devops.transformation.IfProcessor</processor>
-    </processors>
-    <processors>
         <processor>fr.unice.polytech.devops.transformation.MortNeMutator</processor>
     </processors>
-    <!--
+    <processors>
+        <processor>fr.unice.polytech.devops.transformation.InferieurProcessor</processor>
+    </processors>
+    <processors>
+        <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
+    </processors>
     <processors>
         <processor>fr.unice.polytech.devops.transformation.InferieurProcessor</processor>
         <processor>fr.unice.polytech.devops.transformation.BinaryOperatorMutator</processor>
-    </processors>-->
+    </processors>
 </myprocessors>

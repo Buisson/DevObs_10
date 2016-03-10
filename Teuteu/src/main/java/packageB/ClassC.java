@@ -21,4 +21,11 @@ public class ClassC {
 
         return a;
     }
+
+    public void methode3MortNe(){
+        try{
+            int a=5;
+        }
+        catch(Exception e){}
+    }
 }
