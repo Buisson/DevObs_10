@@ -1,6 +1,7 @@
-## Ajouter notre plugin maven de test par mutation à votre projet
+## Comment utiliser notre plugin
 
-Pour ajouter notre plugin maven à votre propre projet maven, il faut ajouter dans votre `pom.xml` :
+### Modifier le fichier `pom.xml` de votre projet `Maven`
+Si votre projet n'utilise pas de plugin, ajoutez la portion suivante au même niveau que les `dependencies` :
 
 ```
     <build>
