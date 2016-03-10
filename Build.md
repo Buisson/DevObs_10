@@ -1,7 +1,7 @@
 ## Comment construire notre framework ?
 
 ### Récupérer notre projet
-Pour commencer, il vous faudra tout d'abord récupérer les sources de notre projet. Deux solutions s'offrent à vous :
+Pour commencer, il vous faudra récupérer les sources de notre projet. Deux solutions s'offrent à vous :
 - Cloner le répertoire courant (via `Git`) :
     `git clone https://github.com/Buisson/DevObs_10.git`
 - Télécharger l'archive des sources à l'adresse suivante :
