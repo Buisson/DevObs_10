@@ -6,7 +6,7 @@ import org.w3c.dom.NodeList;
 public class NodeHelper {
 
     public static boolean isElementNode(Node node) {
-        return (node.getNodeName() != null) && (node.getNodeType() == Node.ELEMENT_NODE);
+        return (node != null) && (node.getNodeName() != null) && (node.getNodeType() == Node.ELEMENT_NODE);
     }
 
     public static int getFirstElementIndex(NodeList nodes) {

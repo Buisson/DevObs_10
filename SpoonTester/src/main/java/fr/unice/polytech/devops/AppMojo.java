@@ -133,7 +133,7 @@ public class AppMojo extends AbstractMojo {
 
                 int index = NodeHelper.getFirstElementIndex(doc.getElementsByTagName("processors"));
                 XMLGenerator.generateXmlFromProcessors(doc.getElementsByTagName("processors").item(index), project.getBasedir().toString());
-
+                XMLGenerator.addProcessorsToXml(project.getBasedir().toString());
                 /**Appel generation HTML**/
                 XMLGenerator.generateRapportHighChart(project.getBasedir().toString());
                 /**FIN GENERATION HTML**/

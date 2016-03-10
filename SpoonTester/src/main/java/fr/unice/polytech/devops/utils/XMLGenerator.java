@@ -116,14 +116,14 @@ public class XMLGenerator {
                 for(int i = 0 ; i< nl.getLength();i++){
                     writer.println("<div id='mutant"+i+"'>");
                     writer.println("<div class='titreMutant'>MUTANT " + i + " : </div>");
-                    if(nl.item(i).getAttributes().getNamedItem("stillborn")==null) {//si on a pas d'attribut stillborn ...
-                        writer.println("<div class='titreProcessors'>Contient les processors : </div>");
-                        NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
+                    writer.println("<div class='titreProcessors'>Contient les processors : </div>");
+                    NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
 
-                        NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
-                        for (int j = 0; j < nlChildProcessors.getLength(); j++) {
-                            writer.println("<div class='processor'>" + nlChildProcessors.item(j).getTextContent() + "</div>");
-                        }
+                    NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
+                    for (int j = 0; j < nlChildProcessors.getLength(); j++) {
+                        writer.println("<div class='processor'>" + nlChildProcessors.item(j).getTextContent() + "</div>");
+                    }
+                    if(nl.item(i).getAttributes().getNamedItem("stillborn")==null) {//si on a pas d'attribut stillborn ...
 
                         NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
 
@@ -141,12 +141,14 @@ public class XMLGenerator {
                                 }
                             }
                         }
-                        if (isAlive) {
-                            mutantVivant++;
-                            writer.println("<div style='background-color:red;'>Mutant" + i + " vivant</div>");
-                        } else {
-                            mutantMort++;
-                            writer.println("<div style='background-color:lightgreen'>Mutant" + i + " tué</div>");
+                        if(i>0) {
+                            if (isAlive) {
+                                mutantVivant++;
+                                writer.println("<div style='background-color:red;'>Mutant" + i + " vivant</div>");
+                            } else {
+                                mutantMort++;
+                                writer.println("<div style='background-color:lightgreen'>Mutant" + i + " tué</div>");
+                            }
                         }
                     }
                     else{
@@ -220,6 +222,79 @@ public class XMLGenerator {
         fXmlFile.delete();//on supprime le fichier tmpReport.xml
     }
 
+    public static boolean addProcessorsToXml(String projectPath) {
+        try {
+            File processorsFile = new File(projectPath + "/myProcessor.xml");
+            File report = new File(projectPath + "/tmpReport.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            Document reportDoc;
+            Document processorsDoc;
+            reportDoc = dbFactory.newDocumentBuilder().parse(report);
+            processorsDoc = dbFactory.newDocumentBuilder().parse(processorsFile);
+
+            NodeList mutantList = reportDoc.getElementsByTagName("mutant");
+            NodeList processorsList = processorsDoc.getElementsByTagName("processors");
+
+            int processorsCounter = -1;
+            List<Node> processors = new ArrayList<>();
+            for (int i = 0; i < processorsList.getLength(); i++) {
+                if (NodeHelper.isElementNode(processorsList.item(i))) {
+                    processors.add(processorsList.item(i));
+                }
+            }
+
+            for (int i = 0; i < mutantList.getLength(); i++) {
+                Node mutant = mutantList.item(i);
+                if (NodeHelper.isElementNode(mutant)) {
+
+                    if (processorsCounter >= 0 && processorsCounter < processors.size()) {
+                        Element processorsElement = reportDoc.createElement("processors");
+                        NodeList procsChildren = processors.get(processorsCounter).getChildNodes();
+
+                        for (int j = 0; j < procsChildren.getLength(); j++) {
+                            Node processor = procsChildren.item(j);
+                            if (NodeHelper.isElementNode(processor)) {
+                                Element processorElement = reportDoc.createElement("processor");
+                                processorElement.setTextContent(processor.getTextContent());
+                                processorElement.setNodeValue(processor.getTextContent());
+                                processorsElement.appendChild(processorElement);
+                            }
+                        }
+                        int firstChildIndex = NodeHelper.getFirstElementIndex(mutant.getChildNodes());
+                        mutant.insertBefore(processorsElement,  mutant.getChildNodes().item(firstChildIndex));
+                    } else {
+                        Element processorsElement = reportDoc.createElement("processors");
+                        int firstChildIndex = NodeHelper.getFirstElementIndex(mutant.getChildNodes());
+                        mutant.insertBefore(processorsElement,  mutant.getChildNodes().item(firstChildIndex));
+                    }
+                    processorsCounter++;
+                }
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer;
+
+            transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(reportDoc);
+            StreamResult result = new StreamResult(report);
+
+            transformer.transform(source, result);
+
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     public static boolean generateXmlFromProcessors(Node processors, String projectPath) {
         File dirTarget = new File(projectPath + "/target/mutation-report");
         if (!dirTarget.exists()) {
@@ -247,10 +322,10 @@ public class XMLGenerator {
             NodeList mutantsList = reportDoc.getElementsByTagName("mutants");
             Node mutants = mutantsList.item(NodeHelper.getLastElementIndex(mutantsList));
             Element mutantElement = reportDoc.createElement("mutant");
-            Element processorsElement = reportDoc.createElement("processors");
+            //Element processorsElement = reportDoc.createElement("processors");
 
             NodeList processorsChildren = processors.getChildNodes();
-
+/*
             for (int i = 0; i < processorsChildren.getLength(); i++) {
                 if (NodeHelper.isElementNode(processorsChildren.item(i))) {
                     Element processorElement = reportDoc.createElement("processor");
@@ -258,8 +333,8 @@ public class XMLGenerator {
                     processorElement.setNodeValue(processorsChildren.item(i).getTextContent());
                     processorsElement.appendChild(processorElement);
                 }
-            }
-            mutantElement.appendChild(processorsElement);
+            }*/
+            //mutantElement.appendChild(processorsElement);
 
             Element testsElement = reportDoc.createElement("tests");
 
