@@ -262,7 +262,7 @@ public class XMLGenerator {
                             testDoc = dbFactory.newDocumentBuilder().parse(fXmlFile);
                             Element classElement = reportDoc.createElement("class");
                             int indexFirstTestSuite = NodeHelper.getFirstElementIndex(testDoc.getElementsByTagName("testcase"));
-                            if (indexFirstTestSuite != -1) {
+                                if (indexFirstTestSuite != -1) {
                                 Element classname = (Element) testDoc.getElementsByTagName("testcase").item(indexFirstTestSuite);
                                 classElement.setAttribute("name", classname.getAttribute("classname"));
                             }
@@ -277,10 +277,15 @@ public class XMLGenerator {
                                     if (children.getLength() != 0) {
                                         int firstChildIndex = NodeHelper.getFirstElementIndex(children);
                                         if (firstChildIndex != -1) {
-                                            Element message = reportDoc.createElement("message");
                                             Element firstChild = (Element) children.item(firstChildIndex);
-                                            message.setTextContent(firstChild.getAttribute("message"));
-                                            testElement.appendChild(message);
+                                            if (firstChild.getTagName().toLowerCase().equals("error")) {
+                                                mutantElement.setAttribute("stillborn", "true");
+                                                break;
+                                            } else {
+                                                Element message = reportDoc.createElement("message");
+                                                message.setTextContent(firstChild.getAttribute("message"));
+                                                testElement.appendChild(message);
+                                            }
                                         }
                                     }
                                     classElement.appendChild(testElement);
@@ -296,7 +301,7 @@ public class XMLGenerator {
 
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = null;
+            Transformer transformer;
 
             transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(reportDoc);
