@@ -20,7 +20,6 @@ public class BinaryOperatorMutatorSelector {
     public boolean decide(CtElement candidate){
 
         if(! test){
-            System.out.println("##########################################");
             // System.out.println(candidate.getPosition().getFile().getAbsolutePath().split("src")[0] + "tmpMyProcessor.xml");
             selector.fill(candidate.getPosition().getFile().getAbsolutePath().split("src")[0] + "myProcessor.xml");
             test = true;
@@ -28,8 +27,6 @@ public class BinaryOperatorMutatorSelector {
 
         CtBinaryOperator op = (CtBinaryOperator)candidate;
         CtFor loopParent = op.getParent(CtFor.class);
-        System.out.println(loopParent != null);
-        System.out.println(selector.methodeAndPackageChecker(candidate,MUTATION_NAME));
         return (loopParent == null) && selector.methodeAndPackageChecker(candidate,MUTATION_NAME);
 
 
