@@ -122,7 +122,10 @@ public class AppMojo extends AbstractMojo {
                 }
                 getLog().info("Application des mutations et génération du rapport ...");
                 ProcessBuilder pb = new ProcessBuilder(mvnCallString, "package");//TODO remplacer par mvn test ?
-                //pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                }
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                 Process p = pb.start();
                 p.waitFor();
