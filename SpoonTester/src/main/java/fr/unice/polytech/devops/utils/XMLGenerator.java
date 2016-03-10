@@ -219,7 +219,7 @@ public class XMLGenerator {
             }
 
         }
-        //fXmlFile.delete();//on supprime le fichier tmpReport.xml
+        fXmlFile.delete();//on supprime le fichier tmpReport.xml
     }
 
     public static boolean addProcessorsToXml(String projectPath) {
