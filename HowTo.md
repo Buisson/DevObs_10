@@ -97,9 +97,16 @@ Supprimer une condition
 
 cette mutation s'applique à condition que le test n'est pas pour s'assurer qu'une variable n'est pas null, car dans ce cas mettre `true` au lieu de la vérification conduiras très probablement à `NullPointerException` ==> peut d’intérêts pour l'utilisateur
 
+Modifier une boucle
+
 `for( int i = 0 ; i < a ; i++ ==>  for( int i = 0 ; i <=a ; i++`  
 
 Dépasser les bords d'une liste ou d'un tableau est une source très courante d'erreurs, cette mutation permet alors de produire ce cas. elle permet aussi d'introduire une erreur dans le calcul que fait la boucle
+
+Operation binaire : 
+
+`for(a+b ==> a-b`  
+
 
  
 
