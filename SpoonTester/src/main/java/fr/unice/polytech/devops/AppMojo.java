@@ -11,7 +11,6 @@ import org.apache.maven.project.MavenProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,7 +36,6 @@ public class AppMojo extends AbstractMojo {
         getLog().info("Debut du Plugin Maven de Mutation");
 
         /**MODIFICATION DU POM**/
-        //TODO Voir le probleme des child (surement faire un trim quelque part ...)
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
         Document doc = null;
@@ -123,7 +121,7 @@ public class AppMojo extends AbstractMojo {
                     mvnCallString += ".cmd";
                 }
                 ProcessBuilder pb = new ProcessBuilder(mvnCallString, "package");//TODO remplacer par mvn test ?
-                pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                //pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                 Process p = pb.start();
                 p.waitFor();
