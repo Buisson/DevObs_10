@@ -35,8 +35,6 @@ Cette classe est l'entrée vers notre plugin, elle associée au goal `rapport`, 
   - Récuperer les résultats des tests après chaque itération ;
   - Génerer le fichier HTML.
 
-Le choix d'appeler maven récursivement 
-
 ## Forces
 
 ### Devs
