@@ -116,14 +116,14 @@ public class XMLGenerator {
                 for(int i = 0 ; i< nl.getLength();i++){
                     writer.println("<div id='mutant"+i+"'>");
                     writer.println("<div class='titreMutant'>MUTANT " + i + " : </div>");
-                    if(nl.item(i).getAttributes().getNamedItem("stillborn")==null) {//si on a pas d'attribut stillborn ...
-                        writer.println("<div class='titreProcessors'>Contient les processors : </div>");
-                        NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
+                    writer.println("<div class='titreProcessors'>Contient les processors : </div>");
+                    NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
 
-                        NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
-                        for (int j = 0; j < nlChildProcessors.getLength(); j++) {
-                            writer.println("<div class='processor'>" + nlChildProcessors.item(j).getTextContent() + "</div>");
-                        }
+                    NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
+                    for (int j = 0; j < nlChildProcessors.getLength(); j++) {
+                        writer.println("<div class='processor'>" + nlChildProcessors.item(j).getTextContent() + "</div>");
+                    }
+                    if(nl.item(i).getAttributes().getNamedItem("stillborn")==null) {//si on a pas d'attribut stillborn ...
 
                         NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
 
@@ -141,12 +141,14 @@ public class XMLGenerator {
                                 }
                             }
                         }
-                        if (isAlive) {
-                            mutantVivant++;
-                            writer.println("<div style='background-color:red;'>Mutant" + i + " vivant</div>");
-                        } else {
-                            mutantMort++;
-                            writer.println("<div style='background-color:lightgreen'>Mutant" + i + " tué</div>");
+                        if(i>0) {
+                            if (isAlive) {
+                                mutantVivant++;
+                                writer.println("<div style='background-color:red;'>Mutant" + i + " vivant</div>");
+                            } else {
+                                mutantMort++;
+                                writer.println("<div style='background-color:lightgreen'>Mutant" + i + " tué</div>");
+                            }
                         }
                     }
                     else{
