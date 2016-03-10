@@ -91,7 +91,15 @@ Voici un exemple de se fichier :
 
 ### Nos differentes mutations
 
-//TODO ACHRAF
+Supprimer une condition
+`if(c){....} ==> if(true){....}`
+cette mutation s'applique à condition que le test n'est pas pour s'assurer qu'une variable n'est pas null, car dans ce cas mettre `true` au lieu de la vérification conduiras très probablement à `NullPointerException` ==> peut d’intérêts pour l'utilisateur
+`for( int i = 0 ; i < a ; i++ ==>  for( int i = 0 ; i <=a ; i++`  
+Dépasser les bords d'une liste ou d'un tableau est une source très courante d'erreurs, cette mutation permet alors de produire ce cas. elle permet aussi d'introduire une erreur dans le calcul que fait la boucle
+
+ 
+
+
 
 ### Rapport HTML généré
 
