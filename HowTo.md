@@ -85,3 +85,12 @@ Voici un exemple de se fichier :
     </processors>
 </myprocessors>
 ```
+
+### Nos differentes mutations
+
+//TODO ACHRAF
+
+### Rapport HTML généré
+
+Le rapport HTML généré se retrouve après le lancement d'un `mvn package` sur votre projet dans le dossier `target/mutation-report/htmlReport.html` de votre projet. Il contient plusieurs informations utiles de tout les mutants crée, les tests en rouge sont les tests qui sont passés, et les test en vert sont ceux qui ont échoués. Ensuite nous avons un diagramme circulaire qui montre le pourcentage de mutant vivant, tué et mort-né.
+
