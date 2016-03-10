@@ -109,50 +109,56 @@ public class XMLGenerator {
                 writer.println("<body>");
                 int mutantVivant = 0;
                 int mutantMort = 0;
+                int mutantMortNe=0;
                 int mutantTotal = rapportDocXML.getElementsByTagName("mutant").getLength();
                 writer.println("<div id='titre'>Rapport des tests par mutation</div>");
                 NodeList nl = rapportDocXML.getElementsByTagName("mutant");
                 for(int i = 0 ; i< nl.getLength();i++){
                     writer.println("<div id='mutant"+i+"'>");
-                    writer.println("<div class='titreMutant'>MUTANT "+i+" : </div>");
-                    writer.println("<div class='titreProcessors'>Contient les processors : </div>");
-                    NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
+                    writer.println("<div class='titreMutant'>MUTANT " + i + " : </div>");
+                    if(nl.item(i).getAttributes().getNamedItem("stillborn")==null) {//si on a pas d'attribut stillborn ...
+                        writer.println("<div class='titreProcessors'>Contient les processors : </div>");
+                        NodeList nlChildNodesMutant = nl.item(i).getChildNodes();
 
-                    NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
-                    for(int j =0 ; j< nlChildProcessors.getLength() ; j++){
-                        writer.println("<div class='processor'>"+nlChildProcessors.item(j).getTextContent()+"</div>");
-                    }
+                        NodeList nlChildProcessors = nlChildNodesMutant.item(0).getChildNodes();
+                        for (int j = 0; j < nlChildProcessors.getLength(); j++) {
+                            writer.println("<div class='processor'>" + nlChildProcessors.item(j).getTextContent() + "</div>");
+                        }
 
-                    NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
+                        NodeList nlChildTests = nlChildNodesMutant.item(1).getChildNodes();
 
-                    writer.println("<div class='titreTests'>TESTS : </div>");
-                    boolean isAlive = true;
-                    for(int ind=0;ind<nlChildTests.getLength();ind++){
-                        writer.println("<div class='titreClass'>Dans la classe "+nlChildTests.item(ind).getAttributes().getNamedItem("name")+" : </div>");
+                        writer.println("<div class='titreTests'>TESTS : </div>");
+                        boolean isAlive = true;
+                        for (int ind = 0; ind < nlChildTests.getLength(); ind++) {
+                            writer.println("<div class='titreClass'>Dans la classe " + nlChildTests.item(ind).getAttributes().getNamedItem("name") + " : </div>");
 
-                        for(int indj = 0 ; indj<nlChildTests.item(ind).getChildNodes().getLength();indj++){
-                            if(nlChildTests.item(ind).getChildNodes().item(indj).hasChildNodes()) {
-                                writer.println("<div class='testFail'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[FAIL] dans la methode de test "+nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name")+"</div>");
-                                isAlive=false;
-                            }
-                            else{
-                                writer.println("<div class='testSuccess'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[SUCESS] dans la methode de test "+nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name")+"</div>");
+                            for (int indj = 0; indj < nlChildTests.item(ind).getChildNodes().getLength(); indj++) {
+                                if (nlChildTests.item(ind).getChildNodes().item(indj).hasChildNodes()) {
+                                    writer.println("<div class='testFail'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[FAIL] dans la methode de test " + nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name") + "</div>");
+                                    isAlive = false;
+                                } else {
+                                    writer.println("<div class='testSuccess'>[TEST] " + nlChildTests.item(ind).getChildNodes().item(indj).getTextContent() + "[SUCESS] dans la methode de test " + nlChildTests.item(ind).getChildNodes().item(indj).getAttributes().getNamedItem("name") + "</div>");
+                                }
                             }
                         }
-                    }
-                    if(isAlive){
-                        mutantVivant++;
-                        writer.println("<div style='background-color:red;'>Mutant"+i+" vivant</div>");
+                        if (isAlive) {
+                            mutantVivant++;
+                            writer.println("<div style='background-color:red;'>Mutant" + i + " vivant</div>");
+                        } else {
+                            mutantMort++;
+                            writer.println("<div style='background-color:lightgreen'>Mutant" + i + " tué</div>");
+                        }
                     }
                     else{
-                        mutantMort++;
-                        writer.println("<div style='background-color:lightgreen'>Mutant"+i+" tué</div>");
+                        writer.println("<div style='background-color:yellow'>Mutant" + i + " mort-né</div>");
+                        mutantMortNe++;
                     }
                     writer.println("</div>");
                 }
 
                 float percentageAlive = (mutantVivant*100)/mutantTotal;
                 float percentageDead = (mutantMort*100)/mutantTotal;
+                float percentageStillBorn = (mutantMortNe*100)/mutantTotal;
 
                 writer.println("<div id=\"container\" style=\"min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto\"></div>");
                 writer.println("<script>\n" +
@@ -192,7 +198,10 @@ public class XMLGenerator {
                         "            },{\n" +
                         "                name: 'Mutant vivant',\n" +
                         "                y: "+percentageAlive+"\n" +
-                        "            }]\n" +
+                        "            },{\n"+
+                        "                 name: 'Mutant Mort-né',\n "+
+                        "                 y: "+percentageStillBorn+" "+
+                                    "}]\n" +
                         "        }]\n" +
                         "    });\n" +
                         "});\n" +
